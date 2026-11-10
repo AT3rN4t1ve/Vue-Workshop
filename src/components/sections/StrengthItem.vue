@@ -1,5 +1,5 @@
 <template>
-  <BaseCard>
+  <BaseCard to="strengths">
     <div class="icon">{{ icon }}</div>
     <h3>{{ title }}</h3>
     <p>{{ desc }}</p>

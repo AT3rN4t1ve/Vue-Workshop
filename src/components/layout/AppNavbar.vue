@@ -1,29 +1,56 @@
 <template>
   <header class="navbar">
     <div class="navbar__inner">
-      <a href="#top" class="logo">{{ nickname }}<span>.</span></a>
-      <nav class="links">
-        <a v-for="link in links" :key="link.href" :href="link.href">{{ link.label }}</a>
-      </nav>
+      <a href="/home" class="logo" @click.prevent="go('home')">About Me<span>.</span></a>
+      <div class="right">
+        <nav class="links">
+          <a
+            href="/home"
+            class="home-btn"
+            :class="{ 'is-active': current === 'home' }"
+            @click.prevent="go('home')"
+          >🏠 <span class="home-btn__text">Home</span></a>
+          <a
+            v-for="link in links"
+            :key="link.to"
+            :href="`/${link.to}`"
+            :class="{ 'is-active': link.group.includes(current) }"
+            @click.prevent="go(link.to)"
+          >{{ link.label }}</a>
+        </nav>
+        <ThemeSwitcher />
+      </div>
     </div>
   </header>
 </template>
 
 <script>
-// ใช้ครั้งเดียว: แถบเมนูด้านบน
+// ใช้ครั้งเดียว: แถบเมนูด้านบน + ปุ่ม Home (กลับไป /home)
+import ThemeSwitcher from './ThemeSwitcher.vue'
+import { goToSection } from '../../router'
+
 export default {
   name: 'AppNavbar',
-  props: {
-    nickname: { type: String, required: true },
-  },
+  components: { ThemeSwitcher },
   data() {
     return {
+      // group = path ของการ์ดที่นับว่าอยู่ใต้เมนูนี้ (ใช้ไฮไลต์เมนู)
       links: [
-        { href: '#about', label: 'เกี่ยวกับ' },
-        { href: '#interests', label: 'ความชอบ' },
-        { href: '#strengths', label: 'จุดแข็ง' },
+        { to: 'education', label: 'เกี่ยวกับ', group: ['education', 'teams'] },
+        { to: 'hobbies', label: 'ความชอบ', group: ['hobbies', 'likes', 'dislikes', 'free-design'] },
+        { to: 'strengths', label: 'จุดแข็ง', group: ['strengths'] },
       ],
     }
+  },
+  computed: {
+    current() {
+      return this.$route.params.section || 'home'
+    },
+  },
+  methods: {
+    go(section) {
+      goToSection(section)
+    },
   },
 }
 </script>
@@ -54,26 +81,49 @@ export default {
 .logo span {
   color: var(--accent);
 }
+.right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
 .links {
   display: flex;
-  gap: 20px;
+  align-items: center;
+  gap: 4px;
 }
 .links a {
+  padding: 6px 12px;
+  border-radius: 999px;
   color: var(--muted);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
-  transition: color 0.2s;
+  white-space: nowrap;
+  transition: color 0.2s, background-color 0.2s;
 }
 .links a:hover {
   color: var(--text);
 }
-@media (max-width: 520px) {
-  .links {
-    gap: 14px;
+.links a.is-active {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  font-weight: 600;
+}
+@media (max-width: 560px) {
+  .right {
+    gap: 8px;
   }
   .links a {
+    padding: 6px 8px;
     font-size: 13px;
+  }
+  .home-btn__text {
+    display: none; /* มือถือ: เหลือแค่ไอคอน 🏠 */
+  }
+}
+@media (max-width: 400px) {
+  .logo {
+    font-size: 17px;
   }
 }
 </style>

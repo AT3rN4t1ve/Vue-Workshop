@@ -1,5 +1,5 @@
 <template>
-  <BaseCard glow>
+  <BaseCard id="free-design" to="free-design" glow>
     <SectionTitle eyebrow="Creative" :title="design.title" />
     <p class="desc">{{ design.desc }}</p>
     <div class="chips">

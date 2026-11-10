@@ -1,5 +1,5 @@
 <template>
-  <BaseCard>
+  <BaseCard id="hobbies" to="hobbies">
     <SectionTitle eyebrow="Hobbies" title="งานอดิเรก" />
     <div class="chips">
       <TagChip v-for="h in hobbies" :key="h.label" :icon="h.icon">{{ h.label }}</TagChip>

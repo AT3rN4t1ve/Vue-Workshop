@@ -1,49 +1,72 @@
-// แก้ข้อมูลทั้งหมดที่ไฟล์นี้ไฟล์เดียว — component จะดึงไปแสดงเอง
-export default {
-  firstName: 'ชื่อจริง',
-  lastName: 'นามสกุล',
-  nickname: 'เพชร',
-  role: 'Frontend Developer',
-  tagline: 'ชอบสร้างของที่ใช้ง่าย หน้าตาดี และเรียนรู้อะไรใหม่ๆ ทุกวัน',
-  avatar: '', // ใส่ URL รูปได้ ถ้าว่างจะแสดงตัวอักษรย่อแทน
+import avatar from '../assets/profile.jpg'
+// โลโก้ทีม: ดาวน์โหลดจาก Wikipedia / Wikimedia Commons
+import logoManUtd from '../assets/teams/man-utd.svg'
+import logoLakers from '../assets/teams/lakers.svg'
+import logoPaperRex from '../assets/teams/paper-rex.svg'
 
-  education: {
-    university: 'มหาวิทยาลัย ABC',
-    faculty: 'คณะวิทยาศาสตร์',
-    major: 'สาขาวิทยาการคอมพิวเตอร์',
-    year: '2020 – 2024',
-  },
+export default {
+  firstName: 'Atthakit',
+  lastName: 'Khampraphai',
+  nickname: 'Petch',
+  role: 'Frontend / Backend / Full Stack Developer',
+  location: 'Nakhonsawan, Thailand',
+  tagline:
+    '',
+  avatar,
+
+  education: [
+    {
+      level: 'ปริญญาตรี',
+      school: 'University of Phayao',
+      major: 'Bachelor of Science (Computer Science)',
+      year: '2022 – 2026',
+    },
+    {
+      level: 'มัธยมปลาย',
+      school: 'Photisansuksa School',
+      major: 'High School (Science-Mathematics)',
+      year: '2019 – 2021',
+    },
+  ],
 
   hobbies: [
     { icon: '🎮', label: 'เล่นเกม' },
     { icon: '🎧', label: 'ฟังเพลง' },
     { icon: '📸', label: 'ถ่ายรูป' },
-    { icon: '☕', label: 'ตระเวนคาเฟ่' },
-    { icon: '🏃', label: 'วิ่ง' },
+    { icon: '🎬', label: 'ดูซีรีส์' },
   ],
 
-  likes: ['กาแฟเย็น', 'อากาศเย็นๆ', 'แมว', 'ดีไซน์มินิมอล', 'Dark mode'],
-  dislikes: ['รถติด', 'ฝนตกตอนไม่พกร่ม', 'ผักชี', 'ประชุมยาวๆ'],
+  likes: ['สุนัข', 'เล่นบาสเก็ตบอล', 'ว่ายน้ำ', 'ดูซีรีส์', 'ฟังเพลง', 'เล่นเกม', 'ถ่ายรูป', 'เที่ยวต่างจังหวัด'],
+  dislikes: ['รถติด', 'ฝนตกตอนขับรถ', 'อาหารรสชาติแปลก', 'สถานที่คนเยอะๆ'],
 
   strengths: [
-    { icon: '⚡', title: 'เรียนรู้ไว', desc: 'จับเทคโนโลยีใหม่ได้เร็ว ลองทำจริงก่อนเสมอ' },
-    { icon: '🤝', title: 'ทำงานเป็นทีม', desc: 'สื่อสารชัด รับฟังและช่วยเหลือคนในทีม' },
-    { icon: '🎯', title: 'ใส่ใจรายละเอียด', desc: 'เก็บงานเนี้ยบ ตั้งแต่ UI ไปจนถึงโค้ด' },
+    {
+      icon: '⚙️',
+      title: 'Backend ที่แข็งแรง',
+      desc: 'ทำ REST API ด้วย Node.js / Express และ Java Spring Boot พร้อม Prisma, MySQL, PostgreSQL และ JWT auth',
+    },
+    {
+      icon: '🔍',
+      title: 'Search & Data',
+      desc: 'ทำระบบค้นหาด้วย Elasticsearch ตอบกลับไม่ถึง 1 วินาที และทำ Dashboard ด้วย Kibana',
+    },
+    {
+      icon: '📱',
+      title: 'Full Stack ข้ามแพลตฟอร์ม',
+      desc: 'ทำได้ทั้งเว็บ (Angular, React) และแอปมือถือ (Flutter) รวมถึงเชื่อม OCR อ่านใบสั่งยา',
+    },
   ],
 
-  freeDesign: {
-    title: 'Free Design',
-    desc: 'ชอบออกแบบ UI ด้วยตัวเอง ทั้ง wireframe ใน Figma และลงมือทำจริงด้วยโค้ด',
-    tools: ['Figma', 'Canva', 'Tailwind', 'Vue'],
-  },
-
   favoriteTeams: [
-    { sport: 'ฟุตบอล', team: 'Team A', emoji: '⚽' },
-    { sport: 'บาสเกตบอล', team: 'Team B', emoji: '🏀' },
+    // logo: รูปโลโก้ทีม (ถ้าไม่ใส่จะแสดง emoji แทน)
+    { sport: 'ฟุตบอล', team: 'Manchester United', emoji: '⚽', logo: logoManUtd },
+    { sport: 'บาสเกตบอล', team: 'Los Angeles Lakers', emoji: '🏀', logo: logoLakers },
+    { sport: 'E-sport', team: 'PaperRex', emoji: '🎮', logo: logoPaperRex },
   ],
 
   contacts: [
-    { label: 'GitHub', url: 'https://github.com/' },
-    { label: 'Email', url: 'mailto:you@example.com' },
+    { label: 'GitHub', url: 'https://github.com/AT3rN4t1ve' },
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/atthakit-khampraphai/' },
+    { label: 'Email', url: 'mailto:kh.callphet@gmail.com' },
   ],
 }

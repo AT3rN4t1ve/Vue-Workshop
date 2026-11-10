@@ -1,9 +1,12 @@
 <template>
-  <BaseCard>
-    <SectionTitle eyebrow="Sports" title="ทีมกีฬาที่ชอบ" />
+  <BaseCard id="teams" to="teams">
+    <SectionTitle eyebrow="Sports & E-Sports" title="ทีมกีฬาที่ชอบ" />
     <ul class="teams">
       <li v-for="t in teams" :key="t.team">
-        <span class="emoji">{{ t.emoji }}</span>
+        <span class="badge">
+          <img v-if="t.logo" :src="t.logo" :alt="`โลโก้ ${t.team}`" loading="lazy">
+          <span v-else class="emoji">{{ t.emoji }}</span>
+        </span>
         <div>
           <p class="team">{{ t.team }}</p>
           <p class="sport">{{ t.sport }}</p>
@@ -14,7 +17,6 @@
 </template>
 
 <script>
-// ใช้ครั้งเดียว: ทีมกีฬาที่ชอบ
 import BaseCard from '../base/BaseCard.vue'
 import SectionTitle from '../base/SectionTitle.vue'
 
@@ -42,6 +44,23 @@ li {
   padding: 12px;
   border-radius: 14px;
   background: var(--chip);
+}
+/* กล่องโลโก้: พื้นขาวเสมอ เพื่อให้โลโก้สีเข้มยังเห็นชัดตอน dark mode */
+.badge {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  padding: 6px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+}
+.badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .emoji {
   font-size: 26px;
