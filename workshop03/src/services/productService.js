@@ -1,68 +1,47 @@
-// บริการข้อมูลสินค้า — หน้าจอทุกหน้าเรียกผ่านไฟล์นี้เท่านั้น
-// ตอนนี้ใช้ข้อมูลจำลอง (mockDb) เมื่อต่อ API ให้เปลี่ยนเนื้อในแต่ละฟังก์ชันเป็น request จริง
-//   getAll  -> GET    /products
-//   getById -> GET    /products/:id
-//   create  -> POST   /products
-//   update  -> PUT    /products/:id
-//   remove  -> DELETE /products/:id
+import http from './http'
+import { DEFAULT_CATEGORY } from '../utils/constants'
 
-import { db, generateId, respond, reject } from './mockDb'
+const text = (value) => String(value || '').trim()
 
-function validate(payload) {
-  if (!payload.name || !String(payload.name).trim()) return 'กรุณากรอกชื่อสินค้า'
-  if (!(Number(payload.price) >= 0)) return 'ราคาต้องไม่ติดลบ'
-  if (!(Number(payload.stock) >= 0)) return 'จำนวนคงเหลือต้องไม่ติดลบ'
-  return null
-}
-
+// ส่งเฉพาะ field ที่ Back-end รับ (ดู FIELDS ใน product.controller.js)
 function clean(payload) {
   return {
-    name: String(payload.name).trim(),
-    description: String(payload.description || '').trim(),
+    name: text(payload.name),
+    description: text(payload.description),
+    category: text(payload.category) || DEFAULT_CATEGORY,
+    imageUrl: text(payload.imageUrl),
     price: Number(payload.price),
-    stock: Math.floor(Number(payload.stock)),
+    stock: Number(payload.stock),
+    optionGroups: (payload.optionGroups || []).map((group) => ({
+      name: text(group.name),
+      isRequired: !!group.isRequired,
+      isMultiple: !!group.isMultiple,
+      choices: (group.choices || []).map((choice) => ({
+        name: text(choice.name),
+        price: Number(choice.price) || 0,
+      })),
+    })),
   }
 }
 
 export default {
   getAll() {
-    return respond(db.getProducts())
+    return http.get('/products')
   },
 
   getById(id) {
-    const product = db.getProducts().find((item) => item._id === id)
-    return product ? respond(product) : reject('ไม่พบสินค้า')
+    return http.get(`/products/${id}`)
   },
 
   create(payload) {
-    const error = validate(payload)
-    if (error) return reject(error)
-
-    const now = new Date().toISOString()
-    const product = { _id: generateId(), ...clean(payload), createdAt: now, updatedAt: now }
-    db.saveProducts([product, ...db.getProducts()])
-    return respond(product)
+    return http.post('/products', clean(payload))
   },
 
   update(id, payload) {
-    const error = validate(payload)
-    if (error) return reject(error)
-
-    const products = db.getProducts()
-    const index = products.findIndex((item) => item._id === id)
-    if (index === -1) return reject('ไม่พบสินค้า')
-
-    products[index] = { ...products[index], ...clean(payload), updatedAt: new Date().toISOString() }
-    db.saveProducts(products)
-    return respond(products[index])
+    return http.put(`/products/${id}`, clean(payload))
   },
 
   remove(id) {
-    const products = db.getProducts()
-    const product = products.find((item) => item._id === id)
-    if (!product) return reject('ไม่พบสินค้า')
-
-    db.saveProducts(products.filter((item) => item._id !== id))
-    return respond(product)
+    return http.delete(`/products/${id}`)
   },
 }

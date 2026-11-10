@@ -3,9 +3,9 @@
     <v-container class="app-container d-flex align-center py-0">
       <router-link to="/" class="brand d-flex align-center">
         <v-avatar color="primary" size="36" rounded class="mr-3">
-          <v-icon dark size="22">mdi-shopping</v-icon>
+          <v-icon dark size="22">mdi-silverware-fork-knife</v-icon>
         </v-avatar>
-        <span class="brand-name">WorkShop Store</span>
+        <span class="brand-name">{{ APP_NAME }}</span>
       </router-link>
 
       <v-spacer />
@@ -28,7 +28,7 @@
           </v-btn>
         </nav>
 
-        <v-btn icon to="/cart" aria-label="ตะกร้าสินค้า" class="mr-1">
+        <v-btn icon to="/cart" aria-label="ตะกร้า" class="mr-1">
           <v-badge :content="cartCount" :value="cartCount > 0" color="primary" overlap>
             <v-icon>mdi-cart-outline</v-icon>
           </v-badge>
@@ -43,23 +43,29 @@
 <script>
 import { mapGetters } from 'vuex'
 import UserMenu from './UserMenu.vue'
+import { APP_NAME } from '../../utils/constants'
 
 export default {
   name: 'AppHeader',
   components: { UserMenu },
+  data: () => ({
+    APP_NAME,
+  }),
   computed: {
     ...mapGetters('cart', { cartCount: 'count' }),
     ...mapGetters('auth', ['isLoggedIn', 'isAdmin']),
     menu() {
-      const items = [
-        { label: 'ร้านค้า', to: '/', icon: 'mdi-storefront-outline', exact: true },
-        { label: 'จัดการสินค้า', to: '/admin/products', icon: 'mdi-package-variant-closed' },
-        { label: 'คำสั่งซื้อ', to: '/admin/orders', icon: 'mdi-clipboard-text-outline' },
-      ]
-      if (this.isAdmin) {
-        items.push({ label: 'ผู้ใช้', to: '/admin/users', icon: 'mdi-account-multiple-outline' })
+      const shop = { label: 'เมนูอาหาร', to: '/', icon: 'mdi-food-outline', exact: true }
+      // user: สั่งอาหารและดู Order ของตัวเอง / admin: จัดการเมนู ดู Order ทั้งร้าน และอนุมัติผู้ใช้
+      if (!this.isAdmin) {
+        return [shop, { label: 'ออเดอร์ของฉัน', to: '/orders', icon: 'mdi-clipboard-text-outline' }]
       }
-      return items
+      return [
+        shop,
+        { label: 'จัดการเมนู', to: '/admin/products', icon: 'mdi-notebook-edit-outline' },
+        { label: 'ออเดอร์', to: '/orders', icon: 'mdi-clipboard-text-outline' },
+        { label: 'ผู้ใช้', to: '/admin/users', icon: 'mdi-account-multiple-outline' },
+      ]
     },
   },
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader title="ตะกร้าสินค้า" :subtitle="items.length ? `${items.length} รายการ` : ''">
+    <PageHeader title="ตะกร้า" :subtitle="items.length ? `${items.length} รายการ` : ''">
       <v-btn v-if="items.length" text color="error" :disabled="processing" @click="clearDialog = true">
         <v-icon left>mdi-trash-can-outline</v-icon>
         ล้างตะกร้า
@@ -8,8 +8,8 @@
     </PageHeader>
 
     <v-card v-if="items.length === 0" class="surface-card">
-      <EmptyState icon="mdi-cart-outline" title="ตะกร้ายังว่างอยู่" text="เลือกสินค้าที่ชอบแล้วกดเพิ่มลงตะกร้าได้เลย">
-        <v-btn depressed color="primary" to="/">ไปเลือกซื้อสินค้า</v-btn>
+      <EmptyState icon="mdi-cart-outline" title="ตะกร้ายังว่างอยู่" text="เลือกเมนูที่อยากกินแล้วกดเพิ่มลงตะกร้าได้เลย">
+        <v-btn depressed color="primary" to="/">ไปเลือกเมนู</v-btn>
       </EmptyState>
     </v-card>
 
@@ -18,8 +18,10 @@
         <v-card class="surface-card px-5 py-1">
           <CartItem
             v-for="item in items"
-            :key="item.product._id"
+            :key="item.key"
             :item="item"
+            :max="maxOf(item)"
+            :problem="problemOf(item)"
             :disabled="processing"
             @update-quantity="updateQuantity"
             @remove="remove"
@@ -32,8 +34,8 @@
           :count="count"
           :total="total"
           :loading="processing"
-          :disabled="hasStockProblem"
-          hint="มีสินค้าที่เกินจำนวนคงเหลือ กรุณาแก้ไขก่อนสั่งซื้อ"
+          :disabled="hasProblem"
+          hint="มีรายการที่สั่งไม่ได้ กรุณาแก้ไขก่อนสั่ง"
           @checkout="confirmDialog = true"
         />
       </v-col>
@@ -41,18 +43,18 @@
 
     <ConfirmDialog
       v-model="confirmDialog"
-      title="ยืนยันการสั่งซื้อ"
-      confirm-text="ยืนยันสั่งซื้อ"
+      title="ยืนยันการสั่งอาหาร"
+      confirm-text="ยืนยันสั่ง"
       :loading="processing"
       @confirm="checkout"
     >
-      สั่งซื้อสินค้า {{ count | number }} ชิ้น ยอดรวม <strong>{{ total | price }}</strong> ใช่หรือไม่
+      สั่งอาหาร {{ count | number }} จาน ยอดรวม <strong>{{ total | price }}</strong> ใช่หรือไม่
     </ConfirmDialog>
 
     <ConfirmDialog
       v-model="clearDialog"
       title="ล้างตะกร้า"
-      message="ต้องการลบสินค้าทั้งหมดออกจากตะกร้าใช่หรือไม่"
+      message="ต้องการลบทุกรายการออกจากตะกร้าใช่หรือไม่"
       confirm-text="ล้างตะกร้า"
       color="error"
       @confirm="clear"
@@ -73,7 +75,8 @@ import CartItem from '../components/cart/CartItem.vue'
 import CartSummary from '../components/cart/CartSummary.vue'
 import CheckoutResultDialog from '../components/cart/CheckoutResultDialog.vue'
 
-// หน้าตะกร้า: ปรับจำนวน/ลบสินค้า และสั่งซื้อ (สร้าง Order ทีละสินค้า ตามรูปแบบ API)
+// หน้าตะกร้า: ปรับจำนวน/ลบสินค้า และสั่งซื้อ
+// (สร้าง Order ทีละรายการ ตามรูปแบบ API — 1 รายการ = สินค้า + ตัวเลือก + หมายเหตุ)
 export default {
   name: 'CartView',
   components: { PageHeader, EmptyState, ConfirmDialog, CartItem, CartSummary, CheckoutResultDialog },
@@ -86,7 +89,7 @@ export default {
   }),
   computed: {
     ...mapState('cart', ['items']),
-    ...mapGetters('cart', ['count', 'total', 'hasStockProblem']),
+    ...mapGetters('cart', ['count', 'total', 'hasProblem', 'problemOf', 'quantityOf']),
   },
   created() {
     this.syncWithLatestProducts()
@@ -98,14 +101,19 @@ export default {
       try {
         this.$store.commit('cart/SYNC', await productService.getAll())
       } catch (e) {
-        this.$store.dispatch('ui/notify', { text: 'อัปเดตข้อมูลสินค้าในตะกร้าไม่สำเร็จ', color: 'error' })
+        this.$store.dispatch('ui/notify', { text: 'อัปเดตข้อมูลเมนูในตะกร้าไม่สำเร็จ', color: 'error' })
       }
+    },
+    // stock ใช้ร่วมกันทุกรายการของสินค้าเดียวกัน จึงหักจำนวนของรายการอื่นออกก่อน
+    maxOf(item) {
+      const others = this.quantityOf(item.product._id) - item.quantity
+      return item.product.stock - others
     },
     updateQuantity(payload) {
       this.$store.commit('cart/SET_QUANTITY', payload)
     },
-    remove(productId) {
-      this.$store.commit('cart/REMOVE', productId)
+    remove(key) {
+      this.$store.commit('cart/REMOVE', key)
     },
     clear() {
       this.$store.commit('cart/CLEAR')
@@ -119,10 +127,11 @@ export default {
       // API รับ Order ทีละสินค้า (POST /products/:id/orders) จึงส่งทีละรายการ
       for (const item of [...this.items]) {
         try {
-          orders.push(await orderService.create(item.product._id, item.quantity))
-          this.$store.commit('cart/REMOVE', item.product._id)
+          const { quantity, options, note } = item
+          orders.push(await orderService.create(item.product._id, { quantity, options, note }))
+          this.$store.commit('cart/REMOVE', item.key)
         } catch (e) {
-          failed.push({ name: item.product.name, message: e.message || 'สั่งซื้อไม่สำเร็จ' })
+          failed.push({ name: item.product.name, message: e.message || 'สั่งไม่สำเร็จ' })
         }
       }
 

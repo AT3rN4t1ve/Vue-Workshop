@@ -8,19 +8,26 @@
     item-key="_id"
     mobile-breakpoint="0"
     loading-text="กำลังโหลดข้อมูล..."
-    no-data-text="ไม่พบสินค้า"
+    no-data-text="ไม่พบเมนู"
     class="product-table"
   >
     <template #[`item.name`]="{ item }">
       <div class="d-flex align-center py-2">
         <div class="product-table__thumb mr-3 flex-shrink-0">
-          <ProductThumb :name="item.name" font-size="1.1rem" />
+          <ProductThumb :name="item.name" :src="item.imageUrl" font-size="1.1rem" />
         </div>
         <div class="product-table__text">
           <div class="font-weight-medium">{{ item.name }}</div>
           <div class="text-caption grey--text text--darken-1 text-truncate">{{ item.description || '-' }}</div>
+          <div v-if="item.optionGroups && item.optionGroups.length" class="text-caption grey--text text--darken-1 text-truncate">
+            ตัวเลือก: {{ item.optionGroups.map((group) => group.name).join(', ') }}
+          </div>
         </div>
       </div>
+    </template>
+
+    <template #[`item.category`]="{ item }">
+      <v-chip small outlined>{{ item.category || '-' }}</v-chip>
     </template>
 
     <template #[`item.price`]="{ item }">
@@ -32,7 +39,7 @@
     </template>
 
     <template #[`item.status`]="{ item }">
-      <StockChip :stock="item.stock" />
+      <StockChip :stock="item.stock" show-amount />
     </template>
 
     <template #[`item.actions`]="{ item }">
@@ -60,7 +67,8 @@ export default {
   },
   data: () => ({
     headers: [
-      { text: 'สินค้า', value: 'name' },
+      { text: 'เมนู', value: 'name' },
+      { text: 'หมวดหมู่', value: 'category', width: 140 },
       { text: 'ราคา', value: 'price', align: 'end', width: 130 },
       { text: 'คงเหลือ', value: 'stock', align: 'end', width: 110 },
       { text: 'สถานะ', value: 'status', sortable: false, width: 140 },

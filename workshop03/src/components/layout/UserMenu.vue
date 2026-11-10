@@ -13,7 +13,7 @@
         <v-list-item-content>
           <v-list-item-title class="font-weight-medium">{{ displayName }}</v-list-item-title>
           <v-list-item-subtitle>
-            @{{ user.username }} · {{ isAdmin ? 'ผู้ดูแลระบบ' : 'สมาชิก' }}
+            {{ user.email }} · {{ isAdmin ? 'ผู้ดูแลระบบ' : 'สมาชิก' }}
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>

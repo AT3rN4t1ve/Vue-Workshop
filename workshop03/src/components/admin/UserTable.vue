@@ -13,7 +13,7 @@
     <template #[`item.fullName`]="{ item }">
       <div class="py-2">
         <div class="font-weight-medium">{{ item.fullName }}</div>
-        <div class="text-caption grey--text text--darken-1">@{{ item.username }}</div>
+        <div class="text-caption grey--text text--darken-1">{{ item.email }}</div>
       </div>
     </template>
 
@@ -74,7 +74,7 @@ export default {
     rows() {
       return this.users.map((user) => ({
         ...user,
-        fullName: [user.firstName, user.lastName].filter(Boolean).join(' ') || user.username,
+        fullName: [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email,
       }))
     },
   },

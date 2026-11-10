@@ -4,8 +4,8 @@
       <v-col cols="12" md="6">
         <v-text-field
           :value="value.search"
-          label="ค้นหาสินค้า"
-          placeholder="พิมพ์ชื่อหรือรายละเอียดสินค้า"
+          label="ค้นหาเมนู"
+          placeholder="พิมพ์ชื่อเมนู เช่น กะเพรา ข้าวผัด"
           prepend-inner-icon="mdi-magnify"
           outlined
           dense
@@ -28,7 +28,7 @@
       <v-col cols="5" sm="6" md="3" class="d-flex justify-end">
         <v-switch
           :input-value="value.inStockOnly"
-          label="เฉพาะที่มีของ"
+          label="เฉพาะที่ยังไม่หมด"
           color="primary"
           inset
           dense

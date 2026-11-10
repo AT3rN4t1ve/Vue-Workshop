@@ -65,7 +65,7 @@ export default {
       this.approvingId = user._id
       try {
         await authService.approveUser(user._id)
-        this.$store.dispatch('ui/notify', `อนุมัติ @${user.username} แล้ว`)
+        this.$store.dispatch('ui/notify', `อนุมัติ ${user.email} แล้ว`)
         this.users = await authService.getUsers()
       } catch (e) {
         this.$store.dispatch('ui/notify', { text: e.message || 'อนุมัติไม่สำเร็จ', color: 'error' })

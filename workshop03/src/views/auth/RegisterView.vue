@@ -13,12 +13,12 @@
       </v-row>
 
       <v-text-field
-        v-model.trim="form.username"
-        label="ชื่อผู้ใช้"
-        hint="อย่างน้อย 3 ตัวอักษร"
-        :rules="[rules.required, rules.username]"
-        prepend-inner-icon="mdi-account-outline"
-        autocomplete="username"
+        v-model.trim="form.email"
+        label="อีเมล"
+        type="email"
+        :rules="[rules.required, rules.email]"
+        prepend-inner-icon="mdi-email-outline"
+        autocomplete="email"
         outlined
         dense
       />
@@ -56,13 +56,13 @@ export default {
   components: { AuthCard, PasswordField },
   data() {
     return {
-      form: { firstName: '', lastName: '', username: '', password: '' },
+      form: { firstName: '', lastName: '', email: '', password: '' },
       confirmPassword: '',
       loading: false,
       error: '',
       rules: {
         required: (v) => !!v || 'กรุณากรอกข้อมูล',
-        username: (v) => String(v || '').length >= 3 || 'ชื่อผู้ใช้ต้องยาวอย่างน้อย 3 ตัวอักษร',
+        email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || '')) || 'รูปแบบอีเมลไม่ถูกต้อง',
         password: (v) => String(v || '').length >= 6 || 'รหัสผ่านต้องยาวอย่างน้อย 6 ตัวอักษร',
         samePassword: (v) => v === this.form.password || 'รหัสผ่านไม่ตรงกัน',
       },
@@ -75,7 +75,9 @@ export default {
       this.error = ''
       try {
         const user = await authService.register(this.form)
-        this.$router.push({ name: 'login', query: { registered: '1', username: user.username } })
+        // คนแรกของระบบได้เป็น admin ที่อนุมัติแล้ว เข้าสู่ระบบได้ทันที
+        const registered = user.approved ? 'approved' : '1'
+        this.$router.push({ name: 'login', query: { registered, email: user.email } })
       } catch (e) {
         this.error = e.message || 'สมัครสมาชิกไม่สำเร็จ'
       } finally {

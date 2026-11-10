@@ -1,9 +1,9 @@
 <template>
   <div>
-    <PageHeader title="จัดการสินค้า" subtitle="เพิ่ม แก้ไข ลบสินค้า และปรับจำนวนคงเหลือ">
+    <PageHeader title="จัดการเมนู" subtitle="เพิ่ม แก้ไข ลบเมนู ตั้งตัวเลือก และปรับจำนวนที่ขายได้">
       <v-btn color="primary" depressed @click="openCreate">
         <v-icon left>mdi-plus</v-icon>
-        เพิ่มสินค้า
+        เพิ่มเมนู
       </v-btn>
     </PageHeader>
 
@@ -19,7 +19,7 @@
       <div class="pa-4">
         <v-text-field
           v-model="search"
-          label="ค้นหาสินค้า"
+          label="ค้นหาเมนู"
           prepend-inner-icon="mdi-magnify"
           outlined
           dense
@@ -32,18 +32,24 @@
       <ProductTable :products="filteredProducts" :loading="loading" @edit="openEdit" @delete="openDelete" />
     </v-card>
 
-    <ProductFormDialog v-model="formDialog" :product="editing" :saving="saving" @save="save" />
+    <ProductFormDialog
+      v-model="formDialog"
+      :product="editing"
+      :categories="categories"
+      :saving="saving"
+      @save="save"
+    />
 
     <ConfirmDialog
       v-model="deleteDialog"
-      title="ลบสินค้า"
-      confirm-text="ลบสินค้า"
+      title="ลบเมนู"
+      confirm-text="ลบเมนู"
       color="error"
       :loading="saving"
       @confirm="remove"
     >
       ต้องการลบ <strong>{{ deleting ? deleting.name : '' }}</strong> ใช่หรือไม่
-      คำสั่งซื้อเดิมของสินค้านี้จะยังอยู่
+      ออเดอร์เดิมของเมนูนี้จะยังอยู่
     </ConfirmDialog>
   </div>
 </template>
@@ -78,7 +84,13 @@ export default {
       const keyword = (this.search || '').trim().toLowerCase()
       if (!keyword) return this.products
       return this.products.filter((product) =>
-        `${product.name} ${product.description || ''}`.toLowerCase().includes(keyword)
+        `${product.name} ${product.description || ''} ${product.category || ''}`.toLowerCase().includes(keyword)
+      )
+    },
+    // หมวดหมู่ที่มีอยู่แล้ว ไว้ให้เลือกในฟอร์ม (พิมพ์หมวดใหม่ได้)
+    categories() {
+      return [...new Set(this.products.map((product) => product.category).filter(Boolean))].sort((a, b) =>
+        a.localeCompare(b, 'th')
       )
     },
     stats() {
@@ -86,10 +98,10 @@ export default {
       const soldOut = this.products.filter((p) => p.stock <= 0).length
       const stockValue = this.products.reduce((sum, p) => sum + p.price * p.stock, 0)
       return [
-        { label: 'สินค้าทั้งหมด', value: formatNumber(this.products.length), icon: 'mdi-package-variant-closed' },
+        { label: 'เมนูทั้งหมด', value: formatNumber(this.products.length), icon: 'mdi-food-outline' },
         { label: 'ใกล้หมด', value: formatNumber(lowStock), icon: 'mdi-alert-outline', color: '#C98A00', tint: '#FFF8E1' },
-        { label: 'สินค้าหมด', value: formatNumber(soldOut), icon: 'mdi-close-circle-outline', color: '#D64545', tint: '#FDECEC' },
-        { label: 'มูลค่าสินค้าคงเหลือ', value: formatPrice(stockValue), icon: 'mdi-cash-multiple', color: '#1E8E5A', tint: '#E6F5EC' },
+        { label: 'หมดแล้ว', value: formatNumber(soldOut), icon: 'mdi-close-circle-outline', color: '#D64545', tint: '#FDECEC' },
+        { label: 'มูลค่าที่ยังขายได้', value: formatPrice(stockValue), icon: 'mdi-cash-multiple', color: '#1E8E5A', tint: '#E6F5EC' },
       ]
     },
   },
@@ -106,7 +118,7 @@ export default {
       try {
         this.products = await productService.getAll()
       } catch (e) {
-        this.error = e.message || 'โหลดสินค้าไม่สำเร็จ'
+        this.error = e.message || 'โหลดเมนูไม่สำเร็จ'
       } finally {
         this.loading = false
       }
@@ -131,7 +143,7 @@ export default {
           this.notify('บันทึกการแก้ไขแล้ว')
         } else {
           await productService.create(payload)
-          this.notify('เพิ่มสินค้าแล้ว')
+          this.notify('เพิ่มเมนูแล้ว')
         }
         this.formDialog = false
         await this.load()
@@ -146,8 +158,8 @@ export default {
       try {
         await productService.remove(this.deleting._id)
         // สินค้าที่ถูกลบต้องหายจากตะกร้าด้วย
-        this.$store.commit('cart/REMOVE', this.deleting._id)
-        this.notify('ลบสินค้าแล้ว')
+        this.$store.commit('cart/REMOVE_PRODUCT', this.deleting._id)
+        this.notify('ลบเมนูแล้ว')
         this.deleteDialog = false
         await this.load()
       } catch (e) {

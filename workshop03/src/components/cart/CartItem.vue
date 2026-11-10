@@ -1,16 +1,18 @@
 <template>
   <div class="cart-item d-flex py-4">
     <router-link :to="detailLink" class="cart-item__thumb mr-4 flex-shrink-0">
-      <ProductThumb :name="product.name" font-size="1.8rem" />
+      <ProductThumb :name="product.name" :src="product.imageUrl" font-size="1.8rem" />
     </router-link>
 
     <div class="flex-grow-1 cart-item__body">
       <div class="d-flex align-start">
         <div class="flex-grow-1 mr-2">
           <router-link :to="detailLink" class="cart-item__name line-clamp-2">{{ product.name }}</router-link>
-          <div class="text-body-2 grey--text text--darken-1 tabular">{{ product.price | price }} / ชิ้น</div>
+          <div v-if="optionsLabel" class="text-body-2 grey--text text--darken-2">{{ optionsLabel }}</div>
+          <div v-if="item.note" class="text-body-2 grey--text text--darken-2">หมายเหตุ: {{ item.note }}</div>
+          <div class="text-body-2 grey--text text--darken-1 tabular">{{ unit | price }} / จาน</div>
         </div>
-        <v-btn icon small :disabled="disabled" :aria-label="`ลบ ${product.name} ออกจากตะกร้า`" @click="$emit('remove', product._id)">
+        <v-btn icon small :disabled="disabled" :aria-label="`ลบ ${product.name} ออกจากตะกร้า`" @click="$emit('remove', item.key)">
           <v-icon small>mdi-trash-can-outline</v-icon>
         </v-btn>
       </div>
@@ -18,11 +20,11 @@
       <div class="d-flex align-center justify-space-between mt-3">
         <QuantityInput
           :value="item.quantity"
-          :max="Math.max(product.stock, 1)"
+          :max="Math.max(max, 1)"
           :disabled="disabled || product.stock <= 0"
-          @input="$emit('update-quantity', { productId: product._id, quantity: $event })"
+          @input="$emit('update-quantity', { key: item.key, quantity: $event })"
         />
-        <div class="cart-item__total tabular">{{ lineTotal | price }}</div>
+        <div class="cart-item__total tabular">{{ unit * item.quantity | price }}</div>
       </div>
 
       <div v-if="problem" class="error--text text-caption mt-2">
@@ -33,15 +35,21 @@
 </template>
 
 <script>
+import { optionsText, unitPrice } from '../../utils/options'
 import ProductThumb from '../common/ProductThumb.vue'
 import QuantityInput from '../common/QuantityInput.vue'
 
-// สินค้า 1 รายการในตะกร้า: ปรับจำนวน (emit 'update-quantity') และลบ (emit 'remove')
+// สินค้า 1 รายการในตะกร้า (สินค้า + ตัวเลือก + หมายเหตุ)
+// ปรับจำนวน (emit 'update-quantity' { key, quantity }) และลบ (emit 'remove' key)
 export default {
   name: 'CartItem',
   components: { ProductThumb, QuantityInput },
   props: {
     item: { type: Object, required: true },
+    // จำนวนสูงสุดของรายการนี้ (stock หักรายการอื่นของสินค้าเดียวกันแล้ว)
+    max: { type: Number, default: 99 },
+    // ข้อความปัญหาที่ต้องแก้ก่อนสั่งซื้อ ('' = ไม่มี)
+    problem: { type: String, default: '' },
     disabled: { type: Boolean, default: false },
   },
   computed: {
@@ -51,15 +59,11 @@ export default {
     detailLink() {
       return { name: 'product-detail', params: { id: this.product._id } }
     },
-    lineTotal() {
-      return this.product.price * this.item.quantity
+    optionsLabel() {
+      return optionsText(this.item.options)
     },
-    problem() {
-      if (this.product.stock <= 0) return 'สินค้าหมดแล้ว กรุณาลบออกจากตะกร้า'
-      if (this.item.quantity > this.product.stock) {
-        return `สินค้าคงเหลือ ${this.product.stock} ชิ้น กรุณาลดจำนวน`
-      }
-      return ''
+    unit() {
+      return unitPrice(this.product, this.item.options)
     },
   },
 }

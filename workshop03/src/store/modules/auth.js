@@ -1,5 +1,5 @@
 // สถานะการเข้าสู่ระบบ: token + ข้อมูลผู้ใช้ บันทึกลง localStorage (ดู store/index.js)
-// ตอนต่อ API ให้แนบ state.token ใน header: Authorization: Bearer <token>
+// token ถูกแนบไปกับทุก request โดย services/http.js (ตั้งค่าใน main.js)
 
 import authService from '../../services/authService'
 
@@ -39,7 +39,7 @@ export default {
     displayName: (state) => {
       if (!state.user) return ''
       const fullName = [state.user.firstName, state.user.lastName].filter(Boolean).join(' ')
-      return fullName || state.user.username
+      return fullName || state.user.email || ''
     },
   },
 

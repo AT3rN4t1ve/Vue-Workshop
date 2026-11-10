@@ -1,14 +1,10 @@
 <template>
   <v-card class="surface-card pa-5 cart-summary">
-    <div class="text-subtitle-1 font-weight-bold mb-4">สรุปคำสั่งซื้อ</div>
+    <div class="text-subtitle-1 font-weight-bold mb-4">สรุปออเดอร์</div>
 
     <div class="d-flex justify-space-between text-body-2 mb-2">
-      <span class="grey--text text--darken-1">จำนวนสินค้า</span>
-      <span class="tabular">{{ count | number }} ชิ้น</span>
-    </div>
-    <div class="d-flex justify-space-between text-body-2 mb-2">
-      <span class="grey--text text--darken-1">ค่าจัดส่ง</span>
-      <span class="success--text">ฟรี</span>
+      <span class="grey--text text--darken-1">จำนวน</span>
+      <span class="tabular">{{ count | number }} จาน</span>
     </div>
 
     <v-divider class="my-4" />
@@ -19,11 +15,11 @@
     </div>
 
     <v-btn color="primary" block large depressed :loading="loading" :disabled="disabled" @click="$emit('checkout')">
-      สั่งซื้อสินค้า
+      สั่งอาหาร
     </v-btn>
     <div v-if="disabled && hint" class="text-caption error--text text-center mt-2">{{ hint }}</div>
 
-    <v-btn text block class="mt-2" to="/" :disabled="loading">เลือกซื้อสินค้าต่อ</v-btn>
+    <v-btn text block class="mt-2" to="/" :disabled="loading">เลือกเมนูเพิ่ม</v-btn>
   </v-card>
 </template>
 

@@ -1,12 +1,22 @@
 // ตะกร้าสินค้า: เก็บใน Vuex และบันทึกลง localStorage (ดู store/index.js)
-// items: [{ product: { _id, name, description, price, stock }, quantity }]
+// items: [{ key, product, quantity, options: [{ group, choice }], note }]
+//   - product คือ Product จาก API ทั้งก้อน (มี optionGroups ไว้คิดราคาตัวเลือก)
+//   - key แยกรายการ: สินค้าเดียวกันแต่ตัวเลือก/หมายเหตุต่างกันเป็นคนละรายการ
+
+import { lineKey, optionProblem, unitPrice } from '../../utils/options'
 
 const STORAGE_KEY = 'ws3_cart'
 
 function loadItems() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : []
+    const items = raw ? JSON.parse(raw) : []
+    // ตะกร้าที่บันทึกไว้ก่อนมีตัวเลือก/หมายเหตุ จะยังไม่มี field พวกนี้
+    return items.map((item) => {
+      const options = item.options || []
+      const note = item.note || ''
+      return { ...item, options, note, key: item.key || lineKey(item.product._id, options, note) }
+    })
   } catch (e) {
     return []
   }
@@ -25,36 +35,52 @@ export default {
 
   getters: {
     count: (state) => state.items.reduce((sum, item) => sum + item.quantity, 0),
-    total: (state) => state.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
-    quantityOf: (state) => (productId) => {
-      const found = state.items.find((item) => item.product._id === productId)
-      return found ? found.quantity : 0
+    total: (state) =>
+      state.items.reduce((sum, item) => sum + unitPrice(item.product, item.options) * item.quantity, 0),
+    // จำนวนรวมของสินค้านี้จากทุกรายการในตะกร้า (stock ใช้ร่วมกันทุกตัวเลือก)
+    quantityOf: (state) => (productId) =>
+      state.items
+        .filter((item) => item.product._id === productId)
+        .reduce((sum, item) => sum + item.quantity, 0),
+    // ข้อความปัญหาของรายการ ('' = สั่งได้)
+    problemOf: (state, getters) => (item) => {
+      const { product } = item
+      if (product.stock <= 0) return 'เมนูนี้หมดแล้ว กรุณาลบออกจากตะกร้า'
+      const optionError = optionProblem(product, item.options)
+      if (optionError) return `${optionError} กรุณาลบรายการนี้แล้วเลือกใหม่`
+      if (getters.quantityOf(product._id) > product.stock) {
+        return `เมนูนี้เหลือ ${product.stock} จาน กรุณาลดจำนวน`
+      }
+      return ''
     },
-    // มีรายการที่สั่งเกินจำนวนคงเหลือ (รวมถึงสินค้าหมด)
-    hasStockProblem: (state) => state.items.some((item) => item.quantity > item.product.stock),
+    hasProblem: (state, getters) => state.items.some((item) => getters.problemOf(item)),
   },
 
   mutations: {
-    ADD(state, { product, quantity }) {
-      const found = state.items.find((item) => item.product._id === product._id)
+    ADD(state, { product, quantity, options = [], note = '' }) {
+      const key = lineKey(product._id, options, note)
+      const found = state.items.find((item) => item.key === key)
       if (found) {
         found.quantity += quantity
         found.product = product
       } else {
-        state.items.push({ product, quantity })
+        state.items.push({ key, product, quantity, options, note: note.trim() })
       }
     },
-    SET_QUANTITY(state, { productId, quantity }) {
-      const found = state.items.find((item) => item.product._id === productId)
+    SET_QUANTITY(state, { key, quantity }) {
+      const found = state.items.find((item) => item.key === key)
       if (found) found.quantity = quantity
     },
-    REMOVE(state, productId) {
+    REMOVE(state, key) {
+      state.items = state.items.filter((item) => item.key !== key)
+    },
+    REMOVE_PRODUCT(state, productId) {
       state.items = state.items.filter((item) => item.product._id !== productId)
     },
     CLEAR(state) {
       state.items = []
     },
-    // อัปเดตราคา/stock ล่าสุด และตัดสินค้าที่ถูกลบออกจากตะกร้า
+    // อัปเดตราคา/stock/ตัวเลือกล่าสุด และตัดสินค้าที่ถูกลบออกจากตะกร้า
     SYNC(state, products) {
       state.items = state.items
         .map((item) => {
@@ -67,27 +93,24 @@ export default {
 
   actions: {
     // คืนค่า true เมื่อเพิ่มลงตะกร้าได้
-    add({ getters, commit, dispatch }, { product, quantity = 1 }) {
+    add({ getters, commit, dispatch }, { product, quantity = 1, options = [], note = '' }) {
+      const notify = (text, color) => dispatch('ui/notify', { text, color }, { root: true })
+
+      const optionError = optionProblem(product, options)
+      if (optionError) {
+        notify(optionError, 'error')
+        return false
+      }
+
       const remaining = product.stock - getters.quantityOf(product._id)
       if (remaining <= 0) {
-        dispatch(
-          'ui/notify',
-          {
-            text: product.stock > 0 ? 'ในตะกร้ามีสินค้านี้ครบจำนวนคงเหลือแล้ว' : 'สินค้าหมด',
-            color: 'error',
-          },
-          { root: true }
-        )
+        notify(product.stock > 0 ? 'ในตะกร้ามีเมนูนี้ครบจำนวนที่เหลือแล้ว' : 'เมนูนี้หมดแล้ว', 'error')
         return false
       }
 
       const amount = Math.min(quantity, remaining)
-      commit('ADD', { product, quantity: amount })
-      dispatch(
-        'ui/notify',
-        { text: `เพิ่ม "${product.name}" ${amount} ชิ้นลงตะกร้าแล้ว`, color: 'success' },
-        { root: true }
-      )
+      commit('ADD', { product, quantity: amount, options, note })
+      notify(`เพิ่ม "${product.name}" ${amount} จานลงตะกร้าแล้ว`, 'success')
       return true
     },
   },

@@ -1,5 +1,13 @@
 <template>
-  <v-responsive :aspect-ratio="aspectRatio" class="product-thumb" :style="{ background: visual.bg }">
+  <v-img
+    v-if="src && !failed"
+    :src="src"
+    :alt="name"
+    :aspect-ratio="aspectRatio"
+    class="product-thumb"
+    @error="failed = true"
+  />
+  <v-responsive v-else :aspect-ratio="aspectRatio" class="product-thumb" :style="{ background: visual.bg }">
     <div class="product-thumb__inner" :style="{ color: visual.fg, fontSize: fontSize }">
       {{ visual.initial }}
     </div>
@@ -9,17 +17,26 @@
 <script>
 import { productVisual } from '../../utils/productVisual'
 
-// ภาพแทนสินค้า สร้างจากชื่อ (Back-end ยังไม่มีรูปสินค้า)
+// รูปสินค้า: ใช้ imageUrl จาก Back-end (ส่งมาทาง src) ถ้าไม่มีหรือโหลดไม่ได้ จะสร้างภาพแทนจากชื่อ
 export default {
   name: 'ProductThumb',
   props: {
     name: { type: String, default: '' },
+    src: { type: String, default: '' },
     aspectRatio: { type: Number, default: 1 },
     fontSize: { type: String, default: '3rem' },
   },
+  data: () => ({
+    failed: false,
+  }),
   computed: {
     visual() {
       return productVisual(this.name)
+    },
+  },
+  watch: {
+    src() {
+      this.failed = false
     },
   },
 }
