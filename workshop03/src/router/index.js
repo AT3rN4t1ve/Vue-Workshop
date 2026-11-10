@@ -13,9 +13,6 @@ import ManageUsersView from '../views/admin/ManageUsersView.vue'
 
 Vue.use(VueRouter)
 
-// meta.guest = เข้าได้เฉพาะตอนยังไม่ login, meta.admin = เฉพาะ admin
-// หน้าอื่นทั้งหมดต้อง login ก่อน (เหมือน Back-end ที่ทุก endpoint ต้องมี token)
-// สิทธิ์ตรงกับ Back-end: จัดการสินค้า/ผู้ใช้ เฉพาะ admin ส่วนหน้าคำสั่งซื้อ user เห็นแค่ของตัวเอง
 const routes = [
   { path: '/login', name: 'login', component: LoginView, meta: { title: 'เข้าสู่ระบบ', guest: true } },
   { path: '/register', name: 'register', component: RegisterView, meta: { title: 'สมัครสมาชิก', guest: true } },

@@ -25,7 +25,6 @@ export default {
 </script>
 
 <style>
-/* สไตล์ส่วนกลางของทั้งระบบ */
 .v-application {
   font-family: 'Prompt', 'Roboto', sans-serif !important;
 }

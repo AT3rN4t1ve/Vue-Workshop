@@ -10,9 +10,7 @@
 
       <v-spacer />
 
-      <!-- ยังไม่ login: แสดงแค่โลโก้ -->
       <template v-if="isLoggedIn">
-        <!-- เมนูบนจอใหญ่ -->
         <nav class="d-none d-md-flex align-center mr-2">
           <v-btn
             v-for="item in menu"
@@ -56,7 +54,6 @@ export default {
     ...mapGetters('auth', ['isLoggedIn', 'isAdmin']),
     menu() {
       const shop = { label: 'เมนูอาหาร', to: '/', icon: 'mdi-food-outline', exact: true }
-      // user: สั่งอาหารและดู Order ของตัวเอง / admin: จัดการเมนู ดู Order ทั้งร้าน และอนุมัติผู้ใช้
       if (!this.isAdmin) {
         return [shop, { label: 'ออเดอร์ของฉัน', to: '/orders', icon: 'mdi-clipboard-text-outline' }]
       }

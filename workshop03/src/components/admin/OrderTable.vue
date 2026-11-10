@@ -89,16 +89,11 @@ import { orderStatus } from '../../utils/constants'
 import { optionsText } from '../../utils/options'
 import ProductThumb from '../common/ProductThumb.vue'
 
-// ขั้นถัดไปที่ admin กดเดินสถานะได้ (ตรงกับ ALLOWED_FROM ของ Back-end)
 const NEXT_STEP = {
   pending: { status: 'cooking', text: 'รับออเดอร์' },
   cooking: { status: 'done', text: 'เสร็จแล้ว' },
 }
 
-// ตาราง Order รับ orders รูปแบบเดียวกับ API: product / user ถูก populate มาแล้ว
-// กดปุ่มเปลี่ยนสถานะจะ emit 'change-status' { order, status }
-//   - admin: รับออเดอร์ -> เสร็จแล้ว และยกเลิกได้ก่อนเสร็จ
-//   - user : ยกเลิกได้เฉพาะ Order ที่ร้านยังไม่รับ (pending)
 export default {
   name: 'OrderTable',
   components: { ProductThumb },
@@ -106,9 +101,7 @@ export default {
     orders: { type: Array, default: () => [] },
     search: { type: String, default: '' },
     loading: { type: Boolean, default: false },
-    // admin เห็นคอลัมน์ผู้สั่ง และเดินสถานะได้
     admin: { type: Boolean, default: false },
-    // _id ของ Order ที่กำลังเปลี่ยนสถานะอยู่
     updatingId: { type: String, default: null },
   },
   data: () => ({
@@ -128,7 +121,6 @@ export default {
     headers() {
       return this.admin ? this.allHeaders : this.allHeaders.filter((header) => header.value !== 'customer')
     },
-    // แปลงเป็นแถวแบนๆ ให้ตารางค้นหา/เรียงได้ง่าย
     rows() {
       return this.orders.map((order) => {
         const user = order.user || {}
@@ -137,7 +129,6 @@ export default {
         return {
           ...order,
           code: String(order._id).slice(-6).toUpperCase(),
-          // product เป็น null เมื่อสินค้าถูกลบไปแล้ว ใช้ชื่อที่ Order จำไว้ตอนสั่งแทน
           productName: order.product ? order.product.name : order.productName || 'ไม่ทราบชื่อเมนู',
           imageUrl: order.product ? order.product.imageUrl : '',
           productDeleted: !order.product,

@@ -65,7 +65,6 @@ const SORTERS = {
   name: (a, b) => a.name.localeCompare(b.name, 'th'),
 }
 
-// หน้าร้าน: แสดงสินค้าทั้งหมด ค้นหา/เรียง/กรองตามหมวดหมู่ และเพิ่มลงตะกร้า
 export default {
   name: 'ShopView',
   components: { ProductFilterBar, ProductGrid, EmptyState },
@@ -115,7 +114,6 @@ export default {
       }
     },
     addToCart(product) {
-      // สินค้าที่มีตัวเลือก ต้องไปเลือกที่หน้ารายละเอียดก่อน
       if ((product.optionGroups || []).length > 0) {
         this.$router.push({ name: 'product-detail', params: { id: product._id } })
         return

@@ -1,16 +1,11 @@
-// ชื่อร้าน แสดงที่แถบบน ท้ายหน้า และชื่อแท็บของเบราว์เซอร์
 export const APP_NAME = 'WorkShop ตามสั่ง'
 
-// stock (จำนวนจานที่ยังขายได้) ตั้งแต่ค่านี้ลงไปถือว่า "ใกล้หมด"
 export const LOW_STOCK = 5
 
-// หมวดหมู่เริ่มต้นของ Back-end เมื่อไม่ได้ระบุ
 export const DEFAULT_CATEGORY = 'อื่นๆ'
 
-// หมายเหตุของ Order ยาวได้ไม่เกินเท่านี้ (ตรงกับ Back-end)
 export const NOTE_MAX_LENGTH = 200
 
-// สถานะ Order ของ Back-end: pending -> cooking -> done (ยกเลิกได้ก่อนเสร็จ)
 export const ORDER_STATUS = {
   pending: { text: 'รอรับออเดอร์', color: '#C98A00', tint: '#FFF8E1', icon: 'mdi-clock-outline' },
   cooking: { text: 'กำลังทำ', color: '#2F6FED', tint: '#E8F3FF', icon: 'mdi-pot-steam-outline' },

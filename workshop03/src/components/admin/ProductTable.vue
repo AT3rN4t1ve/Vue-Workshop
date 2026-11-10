@@ -57,7 +57,6 @@
 import ProductThumb from '../common/ProductThumb.vue'
 import StockChip from '../common/StockChip.vue'
 
-// ตารางสินค้าในหน้าจัดการ emit 'edit' / 'delete' พร้อมสินค้าแถวนั้น
 export default {
   name: 'ProductTable',
   components: { ProductThumb, StockChip },

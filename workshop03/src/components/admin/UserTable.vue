@@ -53,7 +53,6 @@
 </template>
 
 <script>
-// ตารางผู้ใช้ กดปุ่มอนุมัติจะ emit 'approve' พร้อมผู้ใช้แถวนั้น
 export default {
   name: 'UserTable',
   props: {

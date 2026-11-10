@@ -45,7 +45,6 @@ li {
   border-radius: 14px;
   background: var(--chip);
 }
-/* กล่องโลโก้: พื้นขาวเสมอ เพื่อให้โลโก้สีเข้มยังเห็นชัดตอน dark mode */
 .badge {
   flex-shrink: 0;
   width: 48px;

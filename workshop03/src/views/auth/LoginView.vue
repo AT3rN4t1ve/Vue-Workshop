@@ -36,7 +36,6 @@
 import AuthCard from '../../components/auth/AuthCard.vue'
 import PasswordField from '../../components/auth/PasswordField.vue'
 
-// หน้าเข้าสู่ระบบ: สำเร็จแล้วไปหน้าที่ตั้งใจจะเข้า (query redirect) หรือหน้าร้าน
 export default {
   name: 'LoginView',
   components: { AuthCard, PasswordField },
@@ -49,7 +48,6 @@ export default {
     },
   }),
   computed: {
-    // เพิ่งสมัครมา: '1' = รออนุมัติ, 'approved' = คนแรกของระบบ (admin)
     registered() {
       return this.$route.query.registered
     },
@@ -65,7 +63,6 @@ export default {
       try {
         await this.$store.dispatch('auth/login', this.form)
         const redirect = this.$route.query.redirect
-        // ปลายทางอาจถูก guard เปลี่ยนเส้นทางอีกที (เช่นหน้าเฉพาะ admin) ไม่ถือเป็น error
         this.$router.replace(typeof redirect === 'string' ? redirect : '/').catch(() => {})
       } catch (e) {
         this.error = e.message || 'เข้าสู่ระบบไม่สำเร็จ'

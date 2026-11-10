@@ -29,7 +29,6 @@ export default {
 
   props: {
     items: { type: Array, required: true },
-    // เกรดที่ต้องไฮไลต์ ('' = ไม่ไฮไลต์)
     activeGrade: { type: String, default: '' },
   },
 }

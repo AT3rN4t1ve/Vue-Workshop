@@ -1,14 +1,8 @@
-// ตัวยิง request กลางไปที่ Workshop Back-end — service ทุกไฟล์เรียกผ่านไฟล์นี้
-//   - แนบ Authorization: Bearer <token> ให้อัตโนมัติ
-//   - Back-end ตอบ { status, message, data } เสมอ: สำเร็จคืน data, ไม่สำเร็จ throw Error(ข้อความภาษาไทย)
-//   - 401 ขณะ login อยู่ (token หมดอายุ / ใช้ไม่ได้) จะเรียก onUnauthorized ให้ออกจากระบบ ยกเว้นกรณีไม่มีสิทธิ์ admin
-// เปลี่ยนที่อยู่ API ได้ด้วยตัวแปร VUE_APP_API_URL ในไฟล์ .env.local
 
 import { orderStatus } from '../utils/constants'
 
 const BASE_URL =process.env.VUE_APP_API_URL || 'http://localhost:3000/api/v1'
 
-// main.js เป็นคนกำหนด (เลี่ยงการ import store ตรงนี้ซึ่งจะวนกลับมาหา service)
 const handlers = {
   getToken: () => null,
   onUnauthorized: () => {},
@@ -18,10 +12,8 @@ export function configureHttp(options) {
   Object.assign(handlers, options)
 }
 
-// Back-end ใช้ 401 ทั้งกรณี token ใช้ไม่ได้และกรณีไม่มีสิทธิ์ แยกกันด้วยข้อความนี้
 const FORBIDDEN = 'forbidden: admin only'
 
-// ข้อความจาก Back-end (อังกฤษ) -> ข้อความที่แสดงบนหน้าจอ
 const MESSAGES = {
   'email and password are required': 'กรุณากรอกอีเมลและรหัสผ่าน',
   'email already exists': 'อีเมลนี้ถูกใช้แล้ว',
@@ -49,7 +41,6 @@ const MESSAGES = {
   'internal server error': 'เซิร์ฟเวอร์ขัดข้อง กรุณาลองใหม่อีกครั้ง',
 }
 
-// ข้อความที่มีค่าแปรผันอยู่ข้างใน
 const PATTERNS = [
   [/quantity exceeds stock \(stock: (\d+)\)/, (m) => `เมนูนี้เหลือไม่พอ (เหลือ ${m[1]} จาน)`],
   [/^option required: (.+)$/, (m) => `กรุณาเลือก "${m[1]}"`],
@@ -100,7 +91,6 @@ async function request(method, path, body) {
   const result = await response.json().catch(() => null)
   if (response.ok && result) return result.data
 
-  // ไม่มีสิทธิ์ (ไม่ใช่ admin) ไม่ต้องออกจากระบบ แค่แจ้ง error
   const forbidden = result && result.message === FORBIDDEN
   if (response.status === 401 && token && !forbidden) handlers.onUnauthorized()
 

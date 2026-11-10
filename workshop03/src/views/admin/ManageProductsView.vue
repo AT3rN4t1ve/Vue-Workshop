@@ -64,7 +64,6 @@ import StatCard from '../../components/admin/StatCard.vue'
 import ProductTable from '../../components/admin/ProductTable.vue'
 import ProductFormDialog from '../../components/admin/ProductFormDialog.vue'
 
-// หน้าจัดการสินค้า: ตารางสินค้า + เพิ่ม/แก้ไข/ลบ
 export default {
   name: 'ManageProductsView',
   components: { PageHeader, ConfirmDialog, StatCard, ProductTable, ProductFormDialog },
@@ -87,7 +86,6 @@ export default {
         `${product.name} ${product.description || ''} ${product.category || ''}`.toLowerCase().includes(keyword)
       )
     },
-    // หมวดหมู่ที่มีอยู่แล้ว ไว้ให้เลือกในฟอร์ม (พิมพ์หมวดใหม่ได้)
     categories() {
       return [...new Set(this.products.map((product) => product.category).filter(Boolean))].sort((a, b) =>
         a.localeCompare(b, 'th')
@@ -157,7 +155,6 @@ export default {
       this.saving = true
       try {
         await productService.remove(this.deleting._id)
-        // สินค้าที่ถูกลบต้องหายจากตะกร้าด้วย
         this.$store.commit('cart/REMOVE_PRODUCT', this.deleting._id)
         this.notify('ลบเมนูแล้ว')
         this.deleteDialog = false

@@ -39,16 +39,12 @@ import { optionsText, unitPrice } from '../../utils/options'
 import ProductThumb from '../common/ProductThumb.vue'
 import QuantityInput from '../common/QuantityInput.vue'
 
-// สินค้า 1 รายการในตะกร้า (สินค้า + ตัวเลือก + หมายเหตุ)
-// ปรับจำนวน (emit 'update-quantity' { key, quantity }) และลบ (emit 'remove' key)
 export default {
   name: 'CartItem',
   components: { ProductThumb, QuantityInput },
   props: {
     item: { type: Object, required: true },
-    // จำนวนสูงสุดของรายการนี้ (stock หักรายการอื่นของสินค้าเดียวกันแล้ว)
     max: { type: Number, default: 99 },
-    // ข้อความปัญหาที่ต้องแก้ก่อนสั่งซื้อ ('' = ไม่มี)
     problem: { type: String, default: '' },
     disabled: { type: Boolean, default: false },
   },

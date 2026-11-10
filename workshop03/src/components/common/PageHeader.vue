@@ -12,7 +12,6 @@
 </template>
 
 <script>
-// หัวข้อของแต่ละหน้า ปุ่มหลักของหน้าใส่ใน slot (จะอยู่ชิดขวา)
 export default {
   name: 'PageHeader',
   props: {

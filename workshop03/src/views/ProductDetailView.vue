@@ -118,7 +118,6 @@ import StockChip from '../components/common/StockChip.vue'
 import QuantityInput from '../components/common/QuantityInput.vue'
 import EmptyState from '../components/common/EmptyState.vue'
 
-// หน้ารายละเอียดสินค้า: เลือกตัวเลือก/จำนวน ใส่หมายเหตุ แล้วเพิ่มลงตะกร้าหรือซื้อเลย
 export default {
   name: 'ProductDetailView',
   components: { ProductThumb, StockChip, QuantityInput, EmptyState },
@@ -131,7 +130,6 @@ export default {
     loading: true,
     quantity: 1,
     note: '',
-    // { ชื่อกลุ่ม: ชื่อตัวเลือก } หรือ { ชื่อกลุ่ม: [ชื่อตัวเลือก] } เมื่อกลุ่มนั้นเลือกได้หลายอย่าง
     picked: {},
   }),
   computed: {
@@ -141,7 +139,6 @@ export default {
     optionGroups() {
       return this.product.optionGroups || []
     },
-    // รูปแบบที่ Back-end รับ: [{ group, choice }]
     selectedOptions() {
       return this.optionGroups.flatMap((group) => {
         const value = this.picked[group.name]
@@ -158,7 +155,6 @@ export default {
     inCart() {
       return this.$store.getters['cart/quantityOf'](this.product._id)
     },
-    // จำนวนที่ยังเพิ่มลงตะกร้าได้อีก
     available() {
       return this.product.stock - this.inCart
     },

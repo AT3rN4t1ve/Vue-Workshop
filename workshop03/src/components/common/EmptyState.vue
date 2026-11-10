@@ -10,7 +10,6 @@
 </template>
 
 <script>
-// หน้าว่าง: ใช้เมื่อไม่มีข้อมูลให้แสดง ใส่ปุ่มใน slot ได้
 export default {
   name: 'EmptyState',
   props: {

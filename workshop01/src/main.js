@@ -6,7 +6,6 @@ import { loadTheme, applyTheme } from './utils/theme'
 
 Vue.config.productionTip = false
 
-// v-reveal ใช้ได้ทุก component (การ์ดโผล่ตอนเลื่อนถึง)
 Vue.directive('reveal', reveal)
 
 applyTheme(loadTheme())

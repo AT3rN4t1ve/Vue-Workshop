@@ -17,7 +17,6 @@
 <script>
 import { productVisual } from '../../utils/productVisual'
 
-// รูปสินค้า: ใช้ imageUrl จาก Back-end (ส่งมาทาง src) ถ้าไม่มีหรือโหลดไม่ได้ จะสร้างภาพแทนจากชื่อ
 export default {
   name: 'ProductThumb',
   props: {

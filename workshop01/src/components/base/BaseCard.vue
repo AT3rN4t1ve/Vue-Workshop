@@ -44,7 +44,6 @@ export default {
   background: var(--surface);
   border: 1px solid var(--border);
   backdrop-filter: blur(12px);
-  /* opacity/translate = แอนิเมชันโผล่ตอนเลื่อนถึง (v-reveal) */
   transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease,
     opacity 0.6s ease var(--reveal-delay, 0ms), translate 0.6s ease var(--reveal-delay, 0ms);
 }
@@ -60,7 +59,6 @@ export default {
   border: 1px solid transparent;
 }
 
-/* กดได้ */
 .is-clickable {
   cursor: pointer;
 }
@@ -84,7 +82,6 @@ export default {
   transform: none;
 }
 
-/* การ์ดที่ตรงกับ path ปัจจุบัน */
 .is-active {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent),

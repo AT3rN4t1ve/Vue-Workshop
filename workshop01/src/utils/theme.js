@@ -34,7 +34,7 @@ export function saveTheme(theme) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(theme))
   } catch (e) {
-    // บันทึกไม่ได้ก็ไม่เป็นไร ธีมยังใช้ได้ในหน้านี้
+    return
   }
 }
 

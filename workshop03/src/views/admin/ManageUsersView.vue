@@ -27,7 +27,6 @@ import PageHeader from '../../components/common/PageHeader.vue'
 import EmptyState from '../../components/common/EmptyState.vue'
 import UserTable from '../../components/admin/UserTable.vue'
 
-// หน้าผู้ใช้ (เฉพาะ admin): ดูรายชื่อและอนุมัติสมาชิกใหม่
 export default {
   name: 'ManageUsersView',
   components: { PageHeader, EmptyState, UserTable },

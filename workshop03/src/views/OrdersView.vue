@@ -87,9 +87,6 @@ import OrderTable from '../components/admin/OrderTable.vue'
 
 const ALL = 'all'
 
-// หน้าคำสั่งซื้อ: สรุปยอด + ตาราง Order ค้นหา กรองตามสินค้า/สถานะ และเปลี่ยนสถานะ
-// admin เห็น Order ของทุกคนและเดินสถานะได้ ส่วน user เห็นเฉพาะของตัวเองและยกเลิกได้ก่อนร้านรับ
-// (Back-end เป็นคนกรองและตรวจสิทธิ์)
 export default {
   name: 'OrdersView',
   components: { PageHeader, ConfirmDialog, StatCard, OrderTable },
@@ -126,7 +123,6 @@ export default {
         .filter((order) => this.productId === ALL || (order.product && order.product._id === this.productId))
         .filter((order) => this.status === ALL || order.status === this.status)
     },
-    // ตัวเลขสรุปคิดจากรายการที่กรองอยู่ ยอดขายไม่นับ Order ที่ยกเลิก
     stats() {
       const active = this.visibleOrders.filter((order) => order.status !== 'cancelled')
       const waiting = active.filter((order) => order.status !== 'done').length
@@ -160,7 +156,6 @@ export default {
         this.loading = false
       }
     },
-    // การยกเลิกย้อนกลับไม่ได้ จึงถามยืนยันก่อน ส่วนการเดินสถานะทำได้ทันที
     changeStatus({ order, status }) {
       if (status === 'cancelled') {
         this.cancelling = order
@@ -181,7 +176,6 @@ export default {
         this.notify(`เปลี่ยนสถานะเป็น "${orderStatus(updated.status).text}" แล้ว`)
       } catch (e) {
         this.notify(e.message || 'เปลี่ยนสถานะไม่สำเร็จ', 'error')
-        // สถานะอาจถูกคนอื่นเปลี่ยนไปก่อนแล้ว โหลดใหม่ให้ตรงกับ Back-end
         await this.load()
       } finally {
         this.updatingId = null

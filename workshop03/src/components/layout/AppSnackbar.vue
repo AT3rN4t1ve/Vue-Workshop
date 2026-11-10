@@ -10,7 +10,6 @@
 </template>
 
 <script>
-// แสดงข้อความแจ้งเตือนจาก store (เรียกด้วย this.$store.dispatch('ui/notify', ...))
 export default {
   name: 'AppSnackbar',
   computed: {

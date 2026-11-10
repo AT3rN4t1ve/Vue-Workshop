@@ -43,8 +43,6 @@
 import ProductThumb from '../common/ProductThumb.vue'
 import StockChip from '../common/StockChip.vue'
 
-// การ์ดสินค้า 1 ชิ้นในหน้าร้าน กดการ์ดไปหน้ารายละเอียด กดปุ่มมุมขวาจะ emit 'add'
-// (สินค้าที่มีตัวเลือก หน้าร้านจะพาไปเลือกที่หน้ารายละเอียดแทนการเพิ่มทันที)
 export default {
   name: 'ProductCard',
   components: { ProductThumb, StockChip },

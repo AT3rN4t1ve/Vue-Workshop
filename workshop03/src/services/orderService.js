@@ -9,7 +9,6 @@ export default {
     return http.get(`/products/${productId}/orders`)
   },
 
-  // options: [{ group, choice }] — ราคาตัวเลือก Back-end คิดเองจากเมนู
   create(productId, { quantity, options = [], note = '' }) {
     return http.post(`/products/${productId}/orders`, {
       quantity: Number(quantity),
@@ -18,7 +17,6 @@ export default {
     })
   },
 
-  // status: 'cooking' | 'done' | 'cancelled' (user ธรรมดายกเลิกได้เฉพาะ Order ของตัวเองที่ยังรอรับ)
   updateStatus(id, status) {
     return http.put(`/orders/${id}/status`, { status })
   },

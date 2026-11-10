@@ -50,7 +50,6 @@ import authService from '../../services/authService'
 import AuthCard from '../../components/auth/AuthCard.vue'
 import PasswordField from '../../components/auth/PasswordField.vue'
 
-// หน้าสมัครสมาชิก: สมัครสำเร็จแล้วพาไปหน้าเข้าสู่ระบบ (ยัง login ไม่ได้จนกว่า admin จะอนุมัติ)
 export default {
   name: 'RegisterView',
   components: { AuthCard, PasswordField },
@@ -75,7 +74,6 @@ export default {
       this.error = ''
       try {
         const user = await authService.register(this.form)
-        // คนแรกของระบบได้เป็น admin ที่อนุมัติแล้ว เข้าสู่ระบบได้ทันที
         const registered = user.approved ? 'approved' : '1'
         this.$router.push({ name: 'login', query: { registered, email: user.email } })
       } catch (e) {

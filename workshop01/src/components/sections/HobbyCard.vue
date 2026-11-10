@@ -8,7 +8,6 @@
 </template>
 
 <script>
-// ใช้ครั้งเดียว: งานอดิเรก
 import BaseCard from '../base/BaseCard.vue'
 import SectionTitle from '../base/SectionTitle.vue'
 import TagChip from '../base/TagChip.vue'

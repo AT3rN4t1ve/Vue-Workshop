@@ -1,5 +1,3 @@
-// สถานะการเข้าสู่ระบบ: token + ข้อมูลผู้ใช้ บันทึกลง localStorage (ดู store/index.js)
-// token ถูกแนบไปกับทุก request โดย services/http.js (ตั้งค่าใน main.js)
 
 import authService from '../../services/authService'
 
@@ -60,7 +58,6 @@ export default {
     },
     logout({ commit }) {
       commit('CLEAR_SESSION')
-      // ตะกร้าเป็นของผู้ใช้คนเดิม ออกจากระบบแล้วล้างทิ้ง
       commit('cart/CLEAR', null, { root: true })
     },
   },

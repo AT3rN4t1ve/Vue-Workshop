@@ -1,6 +1,5 @@
 <template>
   <span class="typewriter">
-    <!-- โปรแกรมอ่านหน้าจอจะอ่านคำเต็มทั้งหมด ไม่อ่านทีละตัวอักษร -->
     <span class="sr-only">{{ words.join(', ') }}</span>
     <span aria-hidden="true">
       <span class="typewriter__text">{{ text }}</span><span class="typewriter__cursor">|</span>
@@ -9,7 +8,6 @@
 </template>
 
 <script>
-// ใช้ซ้ำได้: พิมพ์ทีละตัว → ค้างไว้ → ลบ → คำถัดไป วนไปเรื่อยๆ
 import { prefersReducedMotion } from '../../utils/motion'
 
 export default {
@@ -31,7 +29,6 @@ export default {
   },
   mounted() {
     if (prefersReducedMotion()) {
-      // ไม่พิมพ์ทีละตัว แค่สลับคำทุกๆ 3 วินาที
       this.text = this.current
       this.timer = setInterval(() => {
         this.index = (this.index + 1) % this.words.length

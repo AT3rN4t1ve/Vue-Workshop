@@ -3,7 +3,6 @@ import { DEFAULT_CATEGORY } from '../utils/constants'
 
 const text = (value) => String(value || '').trim()
 
-// ส่งเฉพาะ field ที่ Back-end รับ (ดู FIELDS ใน product.controller.js)
 function clean(payload) {
   return {
     name: text(payload.name),

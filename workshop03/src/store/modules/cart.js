@@ -1,8 +1,3 @@
-// ตะกร้าสินค้า: เก็บใน Vuex และบันทึกลง localStorage (ดู store/index.js)
-// items: [{ key, product, quantity, options: [{ group, choice }], note }]
-//   - product คือ Product จาก API ทั้งก้อน (มี optionGroups ไว้คิดราคาตัวเลือก)
-//   - key แยกรายการ: สินค้าเดียวกันแต่ตัวเลือก/หมายเหตุต่างกันเป็นคนละรายการ
-
 import { lineKey, optionProblem, unitPrice } from '../../utils/options'
 
 const STORAGE_KEY = 'ws3_cart'
@@ -11,7 +6,6 @@ function loadItems() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     const items = raw ? JSON.parse(raw) : []
-    // ตะกร้าที่บันทึกไว้ก่อนมีตัวเลือก/หมายเหตุ จะยังไม่มี field พวกนี้
     return items.map((item) => {
       const options = item.options || []
       const note = item.note || ''
@@ -37,12 +31,10 @@ export default {
     count: (state) => state.items.reduce((sum, item) => sum + item.quantity, 0),
     total: (state) =>
       state.items.reduce((sum, item) => sum + unitPrice(item.product, item.options) * item.quantity, 0),
-    // จำนวนรวมของสินค้านี้จากทุกรายการในตะกร้า (stock ใช้ร่วมกันทุกตัวเลือก)
     quantityOf: (state) => (productId) =>
       state.items
         .filter((item) => item.product._id === productId)
         .reduce((sum, item) => sum + item.quantity, 0),
-    // ข้อความปัญหาของรายการ ('' = สั่งได้)
     problemOf: (state, getters) => (item) => {
       const { product } = item
       if (product.stock <= 0) return 'เมนูนี้หมดแล้ว กรุณาลบออกจากตะกร้า'
@@ -80,7 +72,6 @@ export default {
     CLEAR(state) {
       state.items = []
     },
-    // อัปเดตราคา/stock/ตัวเลือกล่าสุด และตัดสินค้าที่ถูกลบออกจากตะกร้า
     SYNC(state, products) {
       state.items = state.items
         .map((item) => {
@@ -92,7 +83,6 @@ export default {
   },
 
   actions: {
-    // คืนค่า true เมื่อเพิ่มลงตะกร้าได้
     add({ getters, commit, dispatch }, { product, quantity = 1, options = [], note = '' }) {
       const notify = (text, color) => dispatch('ui/notify', { text, color }, { root: true })
 

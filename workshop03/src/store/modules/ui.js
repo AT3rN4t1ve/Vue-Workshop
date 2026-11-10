@@ -1,5 +1,3 @@
-// สถานะของ UI ส่วนกลาง: ข้อความแจ้งเตือน (snackbar)
-
 export default {
   namespaced: true,
 

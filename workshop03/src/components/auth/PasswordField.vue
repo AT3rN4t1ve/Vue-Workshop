@@ -15,7 +15,6 @@
 </template>
 
 <script>
-// ช่องรหัสผ่านพร้อมปุ่มแสดง/ซ่อน ใช้กับ v-model
 export default {
   name: 'PasswordField',
   props: {

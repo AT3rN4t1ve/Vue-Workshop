@@ -75,8 +75,6 @@ import CartItem from '../components/cart/CartItem.vue'
 import CartSummary from '../components/cart/CartSummary.vue'
 import CheckoutResultDialog from '../components/cart/CheckoutResultDialog.vue'
 
-// หน้าตะกร้า: ปรับจำนวน/ลบสินค้า และสั่งซื้อ
-// (สร้าง Order ทีละรายการ ตามรูปแบบ API — 1 รายการ = สินค้า + ตัวเลือก + หมายเหตุ)
 export default {
   name: 'CartView',
   components: { PageHeader, EmptyState, ConfirmDialog, CartItem, CartSummary, CheckoutResultDialog },
@@ -95,7 +93,6 @@ export default {
     this.syncWithLatestProducts()
   },
   methods: {
-    // ดึงราคา/stock ล่าสุดมาอัปเดตตะกร้า
     async syncWithLatestProducts() {
       if (this.items.length === 0) return
       try {
@@ -104,7 +101,6 @@ export default {
         this.$store.dispatch('ui/notify', { text: 'อัปเดตข้อมูลเมนูในตะกร้าไม่สำเร็จ', color: 'error' })
       }
     },
-    // stock ใช้ร่วมกันทุกรายการของสินค้าเดียวกัน จึงหักจำนวนของรายการอื่นออกก่อน
     maxOf(item) {
       const others = this.quantityOf(item.product._id) - item.quantity
       return item.product.stock - others
@@ -124,7 +120,6 @@ export default {
       const orders = []
       const failed = []
 
-      // API รับ Order ทีละสินค้า (POST /products/:id/orders) จึงส่งทีละรายการ
       for (const item of [...this.items]) {
         try {
           const { quantity, options, note } = item

@@ -34,7 +34,6 @@ export default {
   data() {
     return {
       links: [
-        // group = path ของการ์ดที่อยู่ใต้เมนูนี้ (ใช้ไฮไลต์เมนู), short = ชื่อย่อบนมือถือ
         {
           to: 'personal',
           label: 'ตัวตน',

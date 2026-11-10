@@ -7,8 +7,6 @@
 <script>
 import { LOW_STOCK } from '../../utils/constants'
 
-// ป้ายสถานะของเมนู: หมด / ใกล้หมด / พร้อมสั่ง
-// showAmount ใช้เฉพาะฝั่ง admin — ฝั่งลูกค้าไม่แสดงตัวเลขจำนวนที่ขายได้
 export default {
   name: 'StockChip',
   props: {

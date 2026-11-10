@@ -8,7 +8,6 @@
 </template>
 
 <script>
-// ใช้ 2 ครั้ง: "สิ่งที่ชอบ" และ "สิ่งที่ไม่ชอบ" (component เดียว เปลี่ยนแค่ props)
 import BaseCard from '../base/BaseCard.vue'
 import SectionTitle from '../base/SectionTitle.vue'
 import TagChip from '../base/TagChip.vue'
@@ -17,7 +16,7 @@ export default {
   name: 'PreferenceCard',
   components: { BaseCard, SectionTitle, TagChip },
   props: {
-    section: { type: String, required: true }, // path ของการ์ด เช่น 'likes'
+    section: { type: String, required: true },
     title: { type: String, required: true },
     eyebrow: { type: String, default: '' },
     items: { type: Array, default: () => [] },

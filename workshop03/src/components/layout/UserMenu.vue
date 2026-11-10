@@ -20,7 +20,6 @@
 
       <v-divider class="my-1" />
 
-      <!-- บนจอเล็กเมนูหลักย้ายมาอยู่ในนี้ -->
       <div class="d-md-none">
         <v-list-item v-for="item in menu" :key="item.to" :to="item.to" :exact="item.exact" color="primary">
           <v-list-item-icon class="mr-3">
@@ -44,7 +43,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 
-// ปุ่มรูปผู้ใช้มุมขวาบน: ชื่อผู้ใช้ เมนู (เฉพาะจอเล็ก) และออกจากระบบ
 export default {
   name: 'UserMenu',
   props: {

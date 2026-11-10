@@ -93,7 +93,6 @@ export default {
       this.grade = ''
       this.error = ''
 
-      // v-text-field คืนค่า null เมื่อกดปุ่ม clear
       const input = String(this.score == null ? '' : this.score).trim()
 
       if (input === '') {
@@ -101,7 +100,6 @@ export default {
         return
       }
 
-      // ต้องเป็นตัวเลขล้วน (มีทศนิยมหรือเครื่องหมายลบได้) ห้ามมีตัวอักษรปน
       if (!/^-?\d+(\.\d+)?$/.test(input)) {
         this.error = 'กรุณากรอกเป็นตัวเลขเท่านั้น ห้ามกรอกตัวอักษร'
         return

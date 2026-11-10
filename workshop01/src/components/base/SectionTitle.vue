@@ -11,7 +11,6 @@ export default {
   props: {
     title: { type: String, required: true },
     eyebrow: { type: String, default: '' },
-    // md = หัวข้อในการ์ด, lg = หัวข้อใหญ่ของแต่ละกลุ่ม
     size: {
       type: String,
       default: 'md',

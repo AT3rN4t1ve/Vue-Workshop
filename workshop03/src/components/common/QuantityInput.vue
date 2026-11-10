@@ -21,7 +21,6 @@
 </template>
 
 <script>
-// ตัวเลือกจำนวน (- จำนวน +) ใช้กับ v-model ได้ ค่าจะอยู่ในช่วง min..max เสมอ
 export default {
   name: 'QuantityInput',
   props: {
@@ -35,7 +34,6 @@ export default {
       let next = Math.floor(Number(raw))
       if (!Number.isFinite(next)) next = this.min
       next = Math.max(this.min, Math.min(this.max, next))
-      // ถ้าพิมพ์ค่านอกช่วง ให้ช่องกรอกกลับมาแสดงค่าที่ถูกต้อง
       if (event) event.target.value = next
       if (next !== this.value) this.$emit('input', next)
     },

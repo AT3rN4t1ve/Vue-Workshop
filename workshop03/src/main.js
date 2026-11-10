@@ -8,8 +8,6 @@ import { formatPrice, formatNumber, formatDate } from './utils/format'
 
 Vue.config.productionTip = false
 
-// ให้ทุก request แนบ token ของผู้ใช้ที่ login อยู่
-// ถ้า Back-end ตอบ 401 (token หมดอายุ / ใช้ไม่ได้) ให้ออกจากระบบแล้วกลับไปหน้าเข้าสู่ระบบ
 configureHttp({
   getToken: () => store.state.auth.token,
   onUnauthorized: () => {
@@ -20,7 +18,6 @@ configureHttp({
   },
 })
 
-// ใช้ใน template ได้ทุกหน้า เช่น {{ product.price | price }}
 Vue.filter('price', formatPrice)
 Vue.filter('number', formatNumber)
 Vue.filter('date', formatDate)

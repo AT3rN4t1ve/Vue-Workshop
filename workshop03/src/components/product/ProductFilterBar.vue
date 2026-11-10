@@ -42,7 +42,6 @@
 </template>
 
 <script>
-// แถบค้นหา/เรียง/กรองสินค้า ใช้กับ v-model เป็น object { search, sort, inStockOnly }
 export default {
   name: 'ProductFilterBar',
   props: {

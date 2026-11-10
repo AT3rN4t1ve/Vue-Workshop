@@ -15,7 +15,6 @@
 </template>
 
 <script>
-// กล่องยืนยันก่อนทำรายการสำคัญ ใช้กับ v-model และรับ event @confirm
 export default {
   name: 'ConfirmDialog',
   props: {

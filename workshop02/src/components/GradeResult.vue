@@ -33,7 +33,6 @@ export default {
 
   props: {
     score: { type: Number, required: true },
-    // รายการเกรดที่ได้ จาก gradeTable: { grade, label, color, soft }
     item: { type: Object, required: true },
   },
 }

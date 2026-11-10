@@ -28,7 +28,6 @@
 </template>
 
 <script>
-// แสดงผลหลังกดสั่งซื้อ: orders = รายการที่สำเร็จ, failed = [{ name, message }]
 export default {
   name: 'CheckoutResultDialog',
   props: {

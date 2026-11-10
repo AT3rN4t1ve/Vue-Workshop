@@ -9,7 +9,6 @@
 </template>
 
 <script>
-// ใช้ครั้งเดียว: Free Design
 import BaseCard from '../base/BaseCard.vue'
 import SectionTitle from '../base/SectionTitle.vue'
 import TagChip from '../base/TagChip.vue'

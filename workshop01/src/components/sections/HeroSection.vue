@@ -1,7 +1,5 @@
 <template>
   <section id="home" class="hero">
-    <!-- ข้อความ (ซ้าย) -->
-    <!-- ชั้นนอก = parallax ตอน scroll, ชั้นใน = แอนิเมชันตอนเปิดหน้า (แยกกันไม่ให้ transform ชนกัน) -->
     <div ref="parallax" class="hero__parallax">
       <div class="hero__text">
         <div class="badge"><span class="dot" /> สวัสดีครับ 👋</div>
@@ -17,7 +15,6 @@
       </div>
     </div>
 
-    <!-- รูปโปรไฟล์ (ขวา) — สไตล์เดียวกับ My-Web-Resume -->
     <div class="hero__photo">
       <div class="photo">
         <div class="photo__glow" />
@@ -33,7 +30,6 @@
 </template>
 
 <script>
-// ใช้ครั้งเดียว: ส่วนหัว แนะนำชื่อ-นามสกุล-ชื่อเล่น + รูปโปรไฟล์
 import TypewriterText from '../base/TypewriterText.vue'
 import { onScrollFrame, prefersReducedMotion } from '../../utils/motion'
 
@@ -56,11 +52,9 @@ export default {
     if (this.stopParallax) this.stopParallax()
   },
   methods: {
-    // เลื่อนลง → ข้อความเลื่อนช้ากว่าหน้า (ลงไป 30%) และจางหายภายใน 60% ของความสูง hero
     applyParallax(scrollY) {
       const el = this.$refs.parallax
       if (!el) return
-      // มือถือ: ข้อความอยู่ใต้รูป ถ้าจางตอนเลื่อนจะอ่านไม่ทัน → ไม่ใช้ parallax
       if (window.innerWidth < 768) {
         el.style.transform = ''
         el.style.opacity = ''
@@ -96,7 +90,6 @@ export default {
   animation: scale-in 0.8s 0.1s ease both;
 }
 
-/* ===== รูปโปรไฟล์ ===== */
 .photo {
   position: relative;
   width: 288px;
@@ -137,7 +130,6 @@ export default {
   background-clip: text;
   color: transparent;
 }
-/* ขอบมุมตกแต่ง */
 .corner {
   position: absolute;
   width: 64px;
@@ -161,7 +153,6 @@ export default {
   border-bottom-right-radius: 12px;
 }
 
-/* ===== ข้อความ ===== */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -198,7 +189,7 @@ h1 {
 }
 .role {
   margin: 16px 0 6px;
-  min-height: 1.4em; /* กันบรรทัดกระตุกตอนลบคำจนว่าง */
+  min-height: 1.4em;
   font-size: clamp(20px, 3vw, 28px);
   font-weight: 700;
   color: var(--text);
@@ -215,14 +206,12 @@ h1 {
   line-height: 1.7;
 }
 
-/* จอใหญ่: รูปใหญ่ขึ้นเป็น 384px เหมือน resume */
 @media (min-width: 768px) {
   .photo {
     width: 384px;
     height: 384px;
   }
 }
-/* จอเล็ก: เรียงซ้อนกัน รูปอยู่บน ข้อความกึ่งกลาง */
 @media (max-width: 767px) {
   .hero {
     flex-direction: column-reverse;

@@ -24,7 +24,6 @@
 </template>
 
 <script>
-// กล่องสรุปยอดและปุ่มสั่งซื้อ (emit 'checkout')
 export default {
   name: 'CartSummary',
   props: {

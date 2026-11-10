@@ -11,7 +11,6 @@
 </template>
 
 <script>
-// การ์ดตัวเลขสรุปในหน้าจัดการ
 export default {
   name: 'StatCard',
   props: {

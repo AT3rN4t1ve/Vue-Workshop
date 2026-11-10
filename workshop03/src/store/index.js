@@ -10,7 +10,6 @@ const store = new Vuex.Store({
   modules: { auth, cart, ui },
 })
 
-// บันทึกตะกร้าและ session ทุกครั้งที่มีการเปลี่ยนแปลง รีเฟรชหน้าแล้วไม่หาย
 store.subscribe((mutation, state) => {
   if (mutation.type.startsWith('cart/')) saveCart(state.cart)
   if (mutation.type.startsWith('auth/')) saveSession(state.auth)

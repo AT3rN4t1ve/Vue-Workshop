@@ -1,6 +1,5 @@
 <template>
   <v-row dense>
-    <!-- โครงระหว่างรอโหลด -->
     <template v-if="loading">
       <v-col v-for="n in 8" :key="n" cols="6" sm="4" md="3">
         <v-skeleton-loader type="image, article" class="surface-card" />
@@ -18,7 +17,6 @@
 <script>
 import ProductCard from './ProductCard.vue'
 
-// ตารางการ์ดสินค้า ปรับจำนวนคอลัมน์ตามขนาดจอ
 export default {
   name: 'ProductGrid',
   components: { ProductCard },

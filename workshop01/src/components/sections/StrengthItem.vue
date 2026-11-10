@@ -7,7 +7,6 @@
 </template>
 
 <script>
-// ใช้หลายครั้ง (loop): การ์ดจุดแข็งแต่ละข้อ
 import BaseCard from '../base/BaseCard.vue'
 
 export default {

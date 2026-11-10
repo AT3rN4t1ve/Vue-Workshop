@@ -195,16 +195,12 @@ const emptyForm = () => ({
 
 const hasDuplicate = (names) => new Set(names).size !== names.length
 
-// ฟอร์มเพิ่ม/แก้ไขสินค้า ส่ง product มา = โหมดแก้ไข, ไม่ส่ง = โหมดเพิ่ม
-// กดบันทึกจะ emit 'save' พร้อม { name, description, category, imageUrl, price, stock, optionGroups }
-//   optionGroups: [{ name, isRequired, isMultiple, choices: [{ name, price }] }] (รูปแบบเดียวกับ Back-end)
 export default {
   name: 'ProductFormDialog',
   components: { ProductThumb },
   props: {
     value: { type: Boolean, default: false },
     product: { type: Object, default: null },
-    // หมวดหมู่ที่มีอยู่แล้ว ไว้เป็นตัวเลือกในช่องหมวดหมู่
     categories: { type: Array, default: () => [] },
     saving: { type: Boolean, default: false },
   },
@@ -226,7 +222,6 @@ export default {
     },
   },
   watch: {
-    // เปิด dialog ทุกครั้งให้ตั้งค่าฟอร์มใหม่
     value(open) {
       if (!open) return
       this.optionError = ''
@@ -238,7 +233,6 @@ export default {
             imageUrl: this.product.imageUrl || '',
             price: this.product.price,
             stock: this.product.stock,
-            // คัดลอกออกมาแก้ จะได้ไม่กระทบข้อมูลในตารางจนกว่าจะบันทึก
             optionGroups: JSON.parse(JSON.stringify(this.product.optionGroups || [])),
           }
         : emptyForm()
@@ -257,13 +251,10 @@ export default {
     isSortedByPrice(group) {
       return group.choices.every((choice, i, list) => i === 0 || Number(list[i - 1].price) <= Number(choice.price))
     },
-    // เรียงตัวเลือกตามราคาบวกเพิ่ม: กดครั้งแรกน้อย → มาก กดซ้ำสลับเป็นมาก → น้อย
-    // ลำดับนี้ถูกบันทึกไปด้วย ลูกค้าจะเห็นตัวเลือกเรียงตามนี้
     sortChoices(group) {
       const direction = this.isSortedByPrice(group) ? -1 : 1
       group.choices.sort((a, b) => direction * (Number(a.price) - Number(b.price)))
     },
-    // Back-end ไม่รับชื่อกลุ่มซ้ำ และชื่อตัวเลือกซ้ำในกลุ่มเดียวกัน
     findOptionError() {
       const groups = this.form.optionGroups
       if (hasDuplicate(groups.map((group) => group.name))) return 'ชื่อกลุ่มตัวเลือกซ้ำกัน'

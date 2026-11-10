@@ -1,4 +1,3 @@
-// ตัวช่วยจัดรูปแบบข้อความที่ใช้ซ้ำทั้งระบบ
 
 export function formatPrice(value) {
   const amount = Number(value) || 0
