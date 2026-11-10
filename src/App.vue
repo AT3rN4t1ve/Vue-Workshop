@@ -1,32 +1,38 @@
 <template>
   <div id="app">
-    <div class="bg-blob bg-blob--1" />
-    <div class="bg-blob bg-blob--2" />
+    <div ref="bg" class="bg-layer" aria-hidden="true">
+      <div class="bg-blob bg-blob--1" />
+      <div class="bg-blob bg-blob--2" />
+      <div class="bg-blob bg-blob--3" />
+    </div>
 
     <AppNavbar />
 
     <main class="container">
       <HeroSection :profile="profile" />
 
-      <!-- การ์ดแต่ละใบมี path ของตัวเอง เช่น /education, /likes (ดู router/index.js) -->
-      <section class="grid">
-        <EducationCard class="span-2" :education="profile.education" />
-        <FavoriteTeamCard :teams="profile.favoriteTeams" />
-      </section>
-
-      <section class="grid">
-        <HobbyCard class="span-3" :hobbies="profile.hobbies" />
-        <PreferenceCard section="likes" eyebrow="Likes" title="สิ่งที่ชอบ 💚" :items="profile.likes" variant="like" />
-        <PreferenceCard section="dislikes" eyebrow="Dislikes" title="สิ่งที่ไม่ชอบ 💢" :items="profile.dislikes" variant="dislike" />
-        <FreeDesignCard :design="profile.freeDesign" />
-      </section>
-
-      <section id="strengths">
-        <a href="/strengths" class="strength-head" @click.prevent="goToSection('strengths')">
-          <SectionTitle eyebrow="Strengths" title="จุดแข็งของผม" />
+      <section id="personal" class="group">
+        <a v-reveal href="/personal" class="group-head" @click.prevent="goToSection('personal')">
+          <SectionTitle size="lg" eyebrow="Personal" title="ตัวตน" />
         </a>
         <div class="grid">
-          <StrengthItem v-for="s in profile.strengths" :key="s.title" v-bind="s" />
+          <HobbyCard class="span-3" :hobbies="profile.hobbies" />
+          <PreferenceCard section="likes" eyebrow="Likes" title="สิ่งที่ชอบ 💚" :items="profile.likes" variant="like" />
+          <PreferenceCard section="dislikes" eyebrow="Dislikes" title="สิ่งที่ไม่ชอบ 💢" :items="profile.dislikes" variant="dislike" />
+          <FavoriteTeamCard :teams="profile.favoriteTeams" />
+        </div>
+      </section>
+
+      <section id="skills" class="group">
+        <a v-reveal href="/skills" class="group-head" @click.prevent="goToSection('skills')">
+          <SectionTitle size="lg" eyebrow="Study & Skills" title="การเรียน & ความถนัด" />
+        </a>
+        <div class="grid">
+          <EducationCard class="span-2" :education="profile.education" />
+          <FreeDesignCard :design="profile.freeDesign" />
+          <div id="strengths" class="grid span-3">
+            <StrengthItem v-for="s in profile.strengths" :key="s.title" v-bind="s" />
+          </div>
         </div>
       </section>
     </main>
@@ -38,6 +44,7 @@
 <script>
 import profile from './data/profile'
 import { goToSection } from './router'
+import { onScrollFrame, prefersReducedMotion } from './utils/motion'
 import SectionTitle from './components/base/SectionTitle.vue'
 import AppNavbar from './components/layout/AppNavbar.vue'
 import AppFooter from './components/layout/AppFooter.vue'
@@ -66,6 +73,16 @@ export default {
   data() {
     return { profile }
   },
+  mounted() {
+    if (prefersReducedMotion()) return
+    this.stopParallax = onScrollFrame((scrollY) => {
+      const y = Math.min(scrollY, window.innerHeight) * 0.25
+      this.$refs.bg.style.transform = `translateY(${y}px)`
+    })
+  },
+  beforeDestroy() {
+    if (this.stopParallax) this.stopParallax()
+  },
   methods: {
     goToSection,
   },
@@ -73,12 +90,6 @@ export default {
 </script>
 
 <style>
-/* ==========================================================
-   ธีม = โทนสี (data-palette) × โหมด (data-mode) บน <html>
-   ตั้งค่าผ่าน ThemeSwitcher → utils/theme.js (เก็บใน localStorage)
-   ========================================================== */
-
-/* ----- 1) โทนสี: แต่ละ palette กำหนดแค่สีหลัก ----- */
 :root,
 :root[data-palette='violet'] {
   --accent-light: #7c3aed;
@@ -116,7 +127,6 @@ export default {
   --blob-2: #94a3b8;
 }
 
-/* ----- 2) โหมดสว่าง (ค่าเริ่มต้น) ----- */
 :root {
   --accent: var(--accent-light);
   --bg: color-mix(in srgb, var(--accent-light) 4%, #f8fafc);
@@ -135,7 +145,6 @@ export default {
   color-scheme: light;
 }
 
-/* ----- 3) โหมดมืด: เลือกเอง หรือ auto + เครื่องตั้งเป็น dark ----- */
 :root[data-mode='dark'] {
   --accent: var(--accent-dark);
   --bg: color-mix(in srgb, var(--accent-dark) 5%, #09090f);
@@ -177,7 +186,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Plus Jakarta Sans', 'Noto Sans Thai', system-ui, sans-serif;
+  font-family: 'Outfit', 'Prompt', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -188,17 +197,23 @@ body {
   min-height: 100vh;
 }
 
-/* แสงฟุ้งพื้นหลัง */
-.bg-blob {
+.bg-layer {
   position: fixed;
+  inset: 0;
   z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  will-change: transform;
+}
+.bg-blob {
+  position: absolute;
   width: 480px;
   height: 480px;
   border-radius: 50%;
   filter: blur(120px);
   opacity: var(--blob-opacity);
-  pointer-events: none;
   transition: background-color 0.4s ease;
+  animation: blob-float 7s ease-in-out infinite;
 }
 .bg-blob--1 {
   top: -160px;
@@ -206,9 +221,53 @@ body {
   background: var(--blob-1);
 }
 .bg-blob--2 {
-  bottom: -200px;
-  right: -140px;
+  top: 10%;
+  right: -160px;
   background: var(--blob-2);
+  animation-delay: -2.3s;
+}
+.bg-blob--3 {
+  bottom: -220px;
+  left: 25%;
+  width: 420px;
+  height: 420px;
+  background: var(--blob-1);
+  opacity: calc(var(--blob-opacity) * 0.7);
+  animation-delay: -4.6s;
+}
+
+@keyframes blob-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  translate: 0 28px;
+  transition: opacity 0.6s ease var(--reveal-delay, 0ms), translate 0.6s ease var(--reveal-delay, 0ms);
+}
+.reveal.is-revealed {
+  opacity: 1;
+  translate: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-blob {
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    translate: none;
+    transition: none;
+  }
 }
 
 .container {
@@ -216,12 +275,10 @@ body {
   margin: 0 auto;
   padding: 0 16px;
 }
-.container > section {
-  scroll-margin-top: 80px;
-  margin-bottom: 16px;
+.group {
+  margin-top: 56px;
 }
 
-/* Bento grid */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -233,12 +290,11 @@ body {
 .span-3 {
   grid-column: span 3;
 }
-.strength-head {
+.group-head {
   display: inline-block;
-  margin-top: 40px;
   text-decoration: none;
 }
-.strength-head:hover h2 {
+.group-head:hover h2 {
   color: var(--accent);
 }
 

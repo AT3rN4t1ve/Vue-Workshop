@@ -1,5 +1,6 @@
 <template>
   <div
+    v-reveal
     class="base-card"
     :class="{ 'base-card--glow': glow, 'is-clickable': to, 'is-active': isActive }"
     :role="to ? 'link' : null"
@@ -13,8 +14,6 @@
 </template>
 
 <script>
-// ใช้เยอะ: กล่องการ์ดพื้นฐาน ทุก section ใช้ตัวนี้
-// ใส่ prop `to` = ชื่อ section → กดแล้วเปลี่ยน path เป็น /<to>
 import { goToSection } from '../../router'
 
 export default {
@@ -45,7 +44,9 @@ export default {
   background: var(--surface);
   border: 1px solid var(--border);
   backdrop-filter: blur(12px);
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  /* opacity/translate = แอนิเมชันโผล่ตอนเลื่อนถึง (v-reveal) */
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease,
+    opacity 0.6s ease var(--reveal-delay, 0ms), translate 0.6s ease var(--reveal-delay, 0ms);
 }
 .base-card:hover {
   transform: translateY(-4px);

@@ -1,4 +1,3 @@
-// จัดการธีม: โหลด/บันทึกลง localStorage และใส่ data-attribute ให้ <html>
 const STORAGE_KEY = 'about-me:theme'
 
 export const PALETTES = [
@@ -27,7 +26,6 @@ export function loadTheme() {
       mode: isValid(MODES, saved.mode) ? saved.mode : DEFAULT_THEME.mode,
     }
   } catch (e) {
-    // localStorage ใช้ไม่ได้ (เช่น private mode) หรือข้อมูลเสีย → ใช้ค่าเริ่มต้น
     return { ...DEFAULT_THEME }
   }
 }

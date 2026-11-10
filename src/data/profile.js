@@ -1,5 +1,4 @@
 import avatar from '../assets/profile.jpg'
-// โลโก้ทีม: ดาวน์โหลดจาก Wikipedia / Wikimedia Commons
 import logoManUtd from '../assets/teams/man-utd.svg'
 import logoLakers from '../assets/teams/lakers.svg'
 import logoPaperRex from '../assets/teams/paper-rex.svg'
@@ -8,10 +7,10 @@ export default {
   firstName: 'Atthakit',
   lastName: 'Khampraphai',
   nickname: 'Petch',
-  role: 'Frontend / Backend / Full Stack Developer',
+  roles: ['Frontend Developer', 'Backend Developer', 'Full Stack Developer'],
   location: 'Nakhonsawan, Thailand',
   tagline:
-    '',
+    'Developer ที่สนุกกับการเปลี่ยนไอเดียให้กลายเป็นแอปที่ใช้งานได้จริง ส่วนเวลาว่างมักจะอยู่กับเกม ซีรีส์',
   avatar,
 
   education: [
@@ -41,32 +40,25 @@ export default {
 
   strengths: [
     {
-      icon: '⚙️',
-      title: 'Backend ที่แข็งแรง',
-      desc: 'ทำ REST API ด้วย Node.js / Express และ Java Spring Boot พร้อม Prisma, MySQL, PostgreSQL และ JWT auth',
+      icon: '🧩',
+      title: 'ชอบแก้ปัญหา',
+      desc: 'เจอบั๊กแล้วไม่ยอมแพ้ ต้องหาต้นเหตุให้เจอก่อนถึงจะสบายใจ',
     },
     {
-      icon: '🔍',
-      title: 'Search & Data',
-      desc: 'ทำระบบค้นหาด้วย Elasticsearch ตอบกลับไม่ถึง 1 วินาที และทำ Dashboard ด้วย Kibana',
+      icon: '🎨',
+      title: 'ชอบของสวยและใช้ง่าย',
+      desc: 'ใส่ใจรายละเอียดเล็กๆ ให้คนใช้รู้สึกสบายตาและไม่งง',
     },
     {
-      icon: '📱',
-      title: 'Full Stack ข้ามแพลตฟอร์ม',
-      desc: 'ทำได้ทั้งเว็บ (Angular, React) และแอปมือถือ (Flutter) รวมถึงเชื่อม OCR อ่านใบสั่งยา',
+      icon: '📚',
+      title: 'เรียนรู้เร็ว',
+      desc: 'ชอบลองของใหม่ และเรียนรู้จากการลงมือทำจริงมากกว่าอ่านอย่างเดียว',
     },
   ],
 
   favoriteTeams: [
-    // logo: รูปโลโก้ทีม (ถ้าไม่ใส่จะแสดง emoji แทน)
     { sport: 'ฟุตบอล', team: 'Manchester United', emoji: '⚽', logo: logoManUtd },
     { sport: 'บาสเกตบอล', team: 'Los Angeles Lakers', emoji: '🏀', logo: logoLakers },
     { sport: 'E-sport', team: 'PaperRex', emoji: '🎮', logo: logoPaperRex },
-  ],
-
-  contacts: [
-    { label: 'GitHub', url: 'https://github.com/AT3rN4t1ve' },
-    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/atthakit-khampraphai/' },
-    { label: 'Email', url: 'mailto:kh.callphet@gmail.com' },
   ],
 }

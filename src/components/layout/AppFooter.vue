@@ -8,7 +8,6 @@
 </template>
 
 <script>
-// ใช้ครั้งเดียว: ส่วนท้ายเว็บ + ช่องทางติดต่อ
 export default {
   name: 'AppFooter',
   props: {

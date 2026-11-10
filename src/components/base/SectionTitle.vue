@@ -1,17 +1,22 @@
 <template>
-  <div class="section-title">
+  <div class="section-title" :class="`section-title--${size}`">
     <span v-if="eyebrow" class="eyebrow">{{ eyebrow }}</span>
     <h2>{{ title }}</h2>
   </div>
 </template>
 
 <script>
-// ใช้เยอะ: หัวข้อของแต่ละ section
 export default {
   name: 'SectionTitle',
   props: {
     title: { type: String, required: true },
     eyebrow: { type: String, default: '' },
+    // md = หัวข้อในการ์ด, lg = หัวข้อใหญ่ของแต่ละกลุ่ม
+    size: {
+      type: String,
+      default: 'md',
+      validator: (v) => ['md', 'lg'].includes(v),
+    },
   },
 }
 </script>
@@ -37,5 +42,17 @@ h2 {
   font-size: 20px;
   font-weight: 700;
   color: var(--text);
+  transition: color 0.2s;
+}
+.section-title--lg {
+  margin-bottom: 20px;
+}
+.section-title--lg .eyebrow {
+  font-size: 13px;
+}
+.section-title--lg h2 {
+  font-size: clamp(26px, 4vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 </style>

@@ -3,20 +3,20 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-// ทุก path ของหน้า = id ของการ์ด/section ในหน้า
-// หน้าเว็บยังเป็นหน้าเดียว: เปลี่ยน path → เลื่อนไปที่การ์ดนั้น + ไฮไลต์
 export const SECTIONS = [
-  'home', // ชื่อ + รูปโปรไฟล์
-  'education',
-  'teams',
+  'home',
+  'personal',
   'hobbies',
   'likes',
   'dislikes',
+  'teams',
+  'skills',
+  'education',
   'free-design',
   'strengths',
 ]
 
-const NAV_OFFSET = 80 // ความสูง navbar ที่ sticky อยู่ด้านบน
+const NAV_OFFSET = 80
 
 function scrollTarget(section) {
   if (!section || section === 'home') return { x: 0, y: 0, behavior: 'smooth' }
@@ -29,10 +29,9 @@ const router = new VueRouter({
   routes: [
     { path: '/', redirect: '/home' },
     { path: `/:section(${SECTIONS.join('|')})`, name: 'section' },
-    { path: '*', redirect: '/home' }, // path แปลกๆ → กลับ home
+    { path: '*', redirect: '/home' },
   ],
   scrollBehavior(to, from, savedPosition) {
-    // กด back/forward ของเบราว์เซอร์ → กลับไปตำแหน่งเดิม
     return savedPosition || scrollTarget(to.params.section)
   },
 })
@@ -43,7 +42,6 @@ function scrollToSection(section) {
   window.scrollTo({ top, behavior: 'smooth' })
 }
 
-// ใช้ตอนกดการ์ด/เมนู: ถ้าอยู่ path นั้นอยู่แล้วก็แค่เลื่อนกลับไปหา
 export function goToSection(section) {
   if (router.currentRoute.params.section === section) {
     scrollToSection(section)

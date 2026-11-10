@@ -1,11 +1,14 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import reveal from './directives/reveal'
 import { loadTheme, applyTheme } from './utils/theme'
 
 Vue.config.productionTip = false
 
-// ใส่ธีมก่อน mount เพื่อไม่ให้หน้าเว็บกะพริบเป็นสีเริ่มต้นก่อน
+// v-reveal ใช้ได้ทุก component (การ์ดโผล่ตอนเลื่อนถึง)
+Vue.directive('reveal', reveal)
+
 applyTheme(loadTheme())
 
 new Vue({

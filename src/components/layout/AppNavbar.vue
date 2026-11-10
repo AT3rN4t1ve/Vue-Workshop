@@ -16,7 +16,7 @@
             :href="`/${link.to}`"
             :class="{ 'is-active': link.group.includes(current) }"
             @click.prevent="go(link.to)"
-          >{{ link.label }}</a>
+          ><span class="label-full">{{ link.label }}</span><span class="label-short">{{ link.short }}</span></a>
         </nav>
         <ThemeSwitcher />
       </div>
@@ -25,7 +25,6 @@
 </template>
 
 <script>
-// ใช้ครั้งเดียว: แถบเมนูด้านบน + ปุ่ม Home (กลับไป /home)
 import ThemeSwitcher from './ThemeSwitcher.vue'
 import { goToSection } from '../../router'
 
@@ -34,11 +33,20 @@ export default {
   components: { ThemeSwitcher },
   data() {
     return {
-      // group = path ของการ์ดที่นับว่าอยู่ใต้เมนูนี้ (ใช้ไฮไลต์เมนู)
       links: [
-        { to: 'education', label: 'เกี่ยวกับ', group: ['education', 'teams'] },
-        { to: 'hobbies', label: 'ความชอบ', group: ['hobbies', 'likes', 'dislikes', 'free-design'] },
-        { to: 'strengths', label: 'จุดแข็ง', group: ['strengths'] },
+        // group = path ของการ์ดที่อยู่ใต้เมนูนี้ (ใช้ไฮไลต์เมนู), short = ชื่อย่อบนมือถือ
+        {
+          to: 'personal',
+          label: 'ตัวตน',
+          short: 'ตัวตน',
+          group: ['personal', 'hobbies', 'likes', 'dislikes', 'teams'],
+        },
+        {
+          to: 'skills',
+          label: 'การเรียน & ความถนัด',
+          short: 'ความถนัด',
+          group: ['skills', 'education', 'free-design', 'strengths'],
+        },
       ],
     }
   },
@@ -109,6 +117,17 @@ export default {
   background: color-mix(in srgb, var(--accent) 12%, transparent);
   font-weight: 600;
 }
+.label-short {
+  display: none;
+}
+@media (max-width: 720px) {
+  .label-full {
+    display: none;
+  }
+  .label-short {
+    display: inline;
+  }
+}
 @media (max-width: 560px) {
   .right {
     gap: 8px;
@@ -118,7 +137,7 @@ export default {
     font-size: 13px;
   }
   .home-btn__text {
-    display: none; /* มือถือ: เหลือแค่ไอคอน 🏠 */
+    display: none;
   }
 }
 @media (max-width: 400px) {

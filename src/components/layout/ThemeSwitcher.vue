@@ -48,7 +48,6 @@
 </template>
 
 <script>
-// ใช้ครั้งเดียว: ปุ่มเลือกธีม (โหมดสว่าง/มืด + โทนสี) บันทึกลง localStorage
 import { PALETTES, MODES, loadTheme, saveTheme, applyTheme } from '../../utils/theme'
 
 export default {

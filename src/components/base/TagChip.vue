@@ -6,7 +6,6 @@
 </template>
 
 <script>
-// ใช้เยอะ: ป้ายแท็กเล็กๆ (งานอดิเรก, ชอบ/ไม่ชอบ, เครื่องมือ)
 export default {
   name: 'TagChip',
   props: {

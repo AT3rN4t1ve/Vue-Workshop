@@ -1,15 +1,20 @@
 <template>
   <section id="home" class="hero">
     <!-- ข้อความ (ซ้าย) -->
-    <div class="hero__text">
-      <div class="badge"><span class="dot" /> สวัสดีครับ 👋</div>
-      <h1>
-        {{ profile.firstName }} {{ profile.lastName }}
-        <span class="nick">"{{ profile.nickname }}"</span>
-      </h1>
-      <p class="role">{{ profile.role }}</p>
-      <p v-if="profile.location" class="loc">📍 {{ profile.location }}</p>
-      <p class="tagline">{{ profile.tagline }}</p>
+    <!-- ชั้นนอก = parallax ตอน scroll, ชั้นใน = แอนิเมชันตอนเปิดหน้า (แยกกันไม่ให้ transform ชนกัน) -->
+    <div ref="parallax" class="hero__parallax">
+      <div class="hero__text">
+        <div class="badge"><span class="dot" /> สวัสดีครับ 👋</div>
+        <h1>
+          {{ profile.firstName }} {{ profile.lastName }}
+          <span class="nick">"{{ profile.nickname }}"</span>
+        </h1>
+        <p class="role">
+          ผมเป็น <TypewriterText :words="profile.roles" />
+        </p>
+        <p v-if="profile.location" class="loc">📍 {{ profile.location }}</p>
+        <p class="tagline">{{ profile.tagline }}</p>
+      </div>
     </div>
 
     <!-- รูปโปรไฟล์ (ขวา) — สไตล์เดียวกับ My-Web-Resume -->
@@ -29,14 +34,42 @@
 
 <script>
 // ใช้ครั้งเดียว: ส่วนหัว แนะนำชื่อ-นามสกุล-ชื่อเล่น + รูปโปรไฟล์
+import TypewriterText from '../base/TypewriterText.vue'
+import { onScrollFrame, prefersReducedMotion } from '../../utils/motion'
+
 export default {
   name: 'HeroSection',
+  components: { TypewriterText },
   props: {
     profile: { type: Object, required: true },
   },
   computed: {
     initial() {
       return this.profile.nickname.charAt(0)
+    },
+  },
+  mounted() {
+    if (prefersReducedMotion()) return
+    this.stopParallax = onScrollFrame(this.applyParallax)
+  },
+  beforeDestroy() {
+    if (this.stopParallax) this.stopParallax()
+  },
+  methods: {
+    // เลื่อนลง → ข้อความเลื่อนช้ากว่าหน้า (ลงไป 30%) และจางหายภายใน 60% ของความสูง hero
+    applyParallax(scrollY) {
+      const el = this.$refs.parallax
+      if (!el) return
+      // มือถือ: ข้อความอยู่ใต้รูป ถ้าจางตอนเลื่อนจะอ่านไม่ทัน → ไม่ใช้ parallax
+      if (window.innerWidth < 768) {
+        el.style.transform = ''
+        el.style.opacity = ''
+        return
+      }
+      const height = this.$el.offsetHeight || 1
+      const progress = Math.min(Math.max(scrollY / height, 0), 1)
+      el.style.transform = `translateY(${progress * 30}%)`
+      el.style.opacity = String(Math.max(1 - progress / 0.6, 0))
     },
   },
 }
@@ -50,8 +83,11 @@ export default {
   gap: 48px;
   padding: 72px 0 56px;
 }
-.hero__text {
+.hero__parallax {
   flex: 1;
+  will-change: transform, opacity;
+}
+.hero__text {
   animation: slide-in 0.8s ease both;
 }
 .hero__photo {
@@ -161,9 +197,10 @@ h1 {
   color: transparent;
 }
 .role {
-  margin: 16px 0 4px;
-  font-size: 18px;
-  font-weight: 600;
+  margin: 16px 0 6px;
+  min-height: 1.4em; /* กันบรรทัดกระตุกตอนลบคำจนว่าง */
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 700;
   color: var(--text);
 }
 .loc {
