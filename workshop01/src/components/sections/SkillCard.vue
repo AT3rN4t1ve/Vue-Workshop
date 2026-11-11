@@ -1,5 +1,5 @@
 <template>
-  <BaseCard id="tech-skills" to="tech-skills" glow>
+  <BaseCard id="tech-skills" to="tech-skills" reveal="right" glow>
     <SectionTitle eyebrow="Skills" title="ภาษา & Framework" />
     <div v-for="s in skills" :key="s.group" class="skill-group">
       <p class="label">{{ s.group }}</p>

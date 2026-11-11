@@ -1,5 +1,5 @@
 <template>
-  <BaseCard id="education" to="education" glow>
+  <BaseCard id="education" to="education" reveal="left" glow>
     <SectionTitle eyebrow="Education" title="การศึกษา" />
     <ol class="timeline">
       <li v-for="(edu, i) in education" :key="edu.school" class="edu" :class="{ 'edu--latest': i === 0 }">

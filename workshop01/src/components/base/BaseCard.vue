@@ -1,6 +1,6 @@
 <template>
   <div
-    v-reveal
+    v-reveal="reveal"
     class="base-card"
     :class="{ 'base-card--glow': glow, 'is-clickable': to, 'is-active': isActive }"
     :role="to ? 'link' : null"
@@ -21,6 +21,7 @@ export default {
   props: {
     glow: { type: Boolean, default: false },
     to: { type: String, default: '' },
+    reveal: { type: String, default: 'up' },
   },
   computed: {
     isActive() {
@@ -44,8 +45,7 @@ export default {
   background: var(--surface);
   border: 1px solid var(--border);
   backdrop-filter: blur(12px);
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease,
-    opacity 0.6s ease var(--reveal-delay, 0ms), translate 0.6s ease var(--reveal-delay, 0ms);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, var(--reveal-transition);
 }
 .base-card:hover {
   transform: translateY(-4px);

@@ -1,5 +1,5 @@
 <template>
-  <span class="chip" :class="`chip--${variant}`">
+  <span class="chip reveal-item" :class="`chip--${variant}`">
     <span v-if="icon" class="chip__icon">{{ icon }}</span>
     <slot />
   </span>

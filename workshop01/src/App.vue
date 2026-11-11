@@ -12,7 +12,7 @@
       <HeroSection :profile="profile" />
 
       <section id="personal" class="group">
-        <a v-reveal href="/personal" class="group-head" @click.prevent="goToSection('personal')">
+        <a v-reveal="'left'" href="/personal" class="group-head" @click.prevent="goToSection('personal')">
           <SectionTitle size="lg" eyebrow="Personal" title="ตัวตน" />
         </a>
         <div class="grid">
@@ -24,14 +24,14 @@
       </section>
 
       <section id="skills" class="group">
-        <a v-reveal href="/skills" class="group-head" @click.prevent="goToSection('skills')">
+        <a v-reveal="'left'" href="/skills" class="group-head" @click.prevent="goToSection('skills')">
           <SectionTitle size="lg" eyebrow="Study & Skills" title="การเรียน & ความถนัด" />
         </a>
         <div class="grid">
           <EducationCard class="span-2" :education="profile.education" />
           <SkillCard :skills="profile.skills" />
           <div id="strengths" class="span-3 strengths">
-            <SectionTitle v-reveal eyebrow="Strengths" title="จุดแข็งของผม" />
+            <SectionTitle v-reveal="'left'" eyebrow="Strengths" title="จุดแข็งของผม" />
             <div class="grid">
               <StrengthItem v-for="s in profile.strengths" :key="s.title" v-bind="s" />
             </div>
@@ -252,23 +252,69 @@ body {
   }
 }
 
+:root {
+  --reveal-duration: 0.8s;
+  --reveal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --reveal-transition: opacity var(--reveal-duration) var(--reveal-ease) var(--reveal-delay, 0ms),
+    translate var(--reveal-duration) var(--reveal-ease) var(--reveal-delay, 0ms),
+    scale var(--reveal-duration) var(--reveal-ease) var(--reveal-delay, 0ms),
+    filter var(--reveal-duration) var(--reveal-ease) var(--reveal-delay, 0ms);
+}
+
 .reveal {
   opacity: 0;
-  translate: 0 28px;
-  transition: opacity 0.6s ease var(--reveal-delay, 0ms), translate 0.6s ease var(--reveal-delay, 0ms);
+  translate: 0 40px;
+  filter: blur(6px);
+  transition: var(--reveal-transition);
+}
+.reveal[data-reveal='left'] {
+  translate: -56px 0;
+}
+.reveal[data-reveal='right'] {
+  translate: 56px 0;
+}
+.reveal[data-reveal='zoom'] {
+  translate: none;
+  scale: 0.92;
+}
+@media (max-width: 820px) {
+  .reveal[data-reveal='left'],
+  .reveal[data-reveal='right'] {
+    translate: 0 40px;
+  }
 }
 .reveal.is-revealed {
   opacity: 1;
   translate: none;
+  scale: none;
+  filter: none;
+}
+
+/* ชิ้นย่อยในการ์ด (เช่น TagChip) เด้งเข้ามาทีละอันหลังการ์ดโผล่ */
+.reveal .reveal-item {
+  opacity: 0;
+  scale: 0.6;
+  translate: 0 8px;
+  transition: opacity 0.3s ease, scale 0.3s ease, translate 0.3s ease;
+}
+.reveal.is-revealed .reveal-item {
+  opacity: 1;
+  scale: none;
+  translate: none;
+  transition: opacity 0.4s ease, scale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), translate 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: calc(var(--reveal-delay, 0ms) + 300ms + var(--i, 0) * 50ms);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .bg-blob {
     animation: none;
   }
-  .reveal {
+  .reveal,
+  .reveal .reveal-item {
     opacity: 1;
     translate: none;
+    scale: none;
+    filter: none;
     transition: none;
   }
 }
