@@ -58,6 +58,12 @@ export default {
     },
   ],
 
+  freeDesign: {
+    title: 'Free Design',
+    desc: 'ชอบออกแบบ UI ด้วยตัวเอง ทั้ง wireframe ใน Figma และลงมือทำจริงด้วยโค้ด',
+    tools: ['Figma', 'Canva', 'Tailwind', 'Vue'],
+  },
+
   favoriteTeams: [
     { sport: 'ฟุตบอล', team: 'Manchester United', emoji: '⚽', logo: logoManUtd },
     { sport: 'บาสเกตบอล', team: 'Los Angeles Lakers', emoji: '🏀', logo: logoLakers },
