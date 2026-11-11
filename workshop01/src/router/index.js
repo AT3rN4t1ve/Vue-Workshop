@@ -12,7 +12,7 @@ export const SECTIONS = [
   'teams',
   'skills',
   'education',
-  'free-design',
+  'tech-skills',
   'strengths',
 ]
 

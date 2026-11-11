@@ -29,7 +29,7 @@
         </a>
         <div class="grid">
           <EducationCard class="span-2" :education="profile.education" />
-          <FreeDesignCard :design="profile.freeDesign" />
+          <SkillCard :skills="profile.skills" />
           <div id="strengths" class="span-3 strengths">
             <SectionTitle v-reveal eyebrow="Strengths" title="จุดแข็งของผม" />
             <div class="grid">
@@ -56,8 +56,8 @@ import EducationCard from './components/sections/EducationCard.vue'
 import FavoriteTeamCard from './components/sections/FavoriteTeamCard.vue'
 import HobbyCard from './components/sections/HobbyCard.vue'
 import PreferenceCard from './components/sections/PreferenceCard.vue'
-import FreeDesignCard from './components/sections/FreeDesignCard.vue'
 import StrengthItem from './components/sections/StrengthItem.vue'
+import SkillCard from './components/sections/SkillCard.vue'
 
 export default {
   name: 'App',
@@ -70,8 +70,8 @@ export default {
     FavoriteTeamCard,
     HobbyCard,
     PreferenceCard,
-    FreeDesignCard,
     StrengthItem,
+    SkillCard,
   },
   data() {
     return { profile }

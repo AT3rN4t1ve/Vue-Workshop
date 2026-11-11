@@ -30,6 +30,11 @@ export default {
     },
   ],
 
+  skills: [
+    { group: 'ภาษา', items: ['HTML', 'CSS', 'JavaScript' , 'Python', 'TypeScript'] },
+    { group: 'Framework', items: ['Vue.js', 'Tailwind CSS', 'Node.js', 'Express.js', 'React', 'Next.js'] },
+  ],
+
   hobbies: [
     { icon: '🎮', label: 'เล่นเกม' },
     { icon: '🎧', label: 'ฟังเพลง' },
@@ -56,12 +61,6 @@ export default {
       desc: 'ชอบลองของใหม่ และเรียนรู้จากการลงมือทำจริงมากกว่าอ่านอย่างเดียว',
     },
   ],
-
-  freeDesign: {
-    title: 'Free Design',
-    desc: 'ชอบออกแบบ UI ด้วยตัวเอง ทั้ง wireframe ใน Figma และลงมือทำจริงด้วยโค้ด',
-    tools: ['Figma', 'Canva', 'Tailwind', 'Vue'],
-  },
 
   favoriteTeams: [
     { sport: 'ฟุตบอล', team: 'Manchester United', emoji: '⚽', logo: logoManUtd },

@@ -44,7 +44,7 @@ export default {
           to: 'skills',
           label: 'การเรียน & ความถนัด',
           short: 'ความถนัด',
-          group: ['skills', 'education', 'free-design'],
+          group: ['skills', 'education', 'tech-skills'],
         },
         {
           to: 'strengths',
