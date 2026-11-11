@@ -6,7 +6,7 @@
       <v-col cols="12" md="7">
         <v-card class="surface-card pa-5">
           <div class="d-flex align-center mb-5">
-            <v-avatar color="#FFF1E8" size="56" class="mr-4">
+            <v-avatar size="56" class="avatar-tint mr-4">
               <span class="profile__initial">{{ initial }}</span>
             </v-avatar>
             <div>
@@ -208,6 +208,6 @@ export default {
 .profile__initial {
   font-size: 22px;
   font-weight: 700;
-  color: #e4572e;
+  color: var(--v-primary-base);
 }
 </style>

@@ -2,7 +2,7 @@
   <v-menu offset-y left min-width="230">
     <template #activator="{ on, attrs }">
       <v-btn icon aria-label="เมนูผู้ใช้" v-bind="attrs" v-on="on">
-        <v-avatar color="#FFF1E8" size="36">
+        <v-avatar size="36" class="avatar-tint">
           <span class="user-menu__initial">{{ initial }}</span>
         </v-avatar>
       </v-btn>
@@ -74,6 +74,6 @@ export default {
 <style scoped>
 .user-menu__initial {
   font-weight: 600;
-  color: #e4572e;
+  color: var(--v-primary-base);
 }
 </style>

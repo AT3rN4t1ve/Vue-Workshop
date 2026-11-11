@@ -1,8 +1,8 @@
 <template>
-  <v-row dense>
+  <v-row :dense="$vuetify.breakpoint.xsOnly">
     <template v-if="loading">
       <v-col v-for="n in 8" :key="n" cols="6" sm="4" md="3">
-        <v-skeleton-loader type="image, article" class="surface-card" />
+        <v-skeleton-loader type="image, article" class="surface-card product-skeleton" />
       </v-col>
     </template>
 
@@ -26,3 +26,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.product-skeleton {
+  overflow: hidden;
+}
+</style>

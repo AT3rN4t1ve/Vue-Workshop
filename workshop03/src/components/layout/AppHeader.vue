@@ -70,7 +70,7 @@ export default {
 
 <style scoped>
 .app-header {
-  border-bottom: 1px solid #e8eaee !important;
+  border-bottom: 1px solid var(--app-border) !important;
 }
 .app-header >>> .v-toolbar__content {
   padding: 0;
@@ -79,16 +79,19 @@ export default {
   text-decoration: none;
 }
 .brand-name {
+  font-family: var(--font-heading);
   font-size: 1.15rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--app-text);
   white-space: nowrap;
 }
 .nav-btn {
-  color: #4b5563 !important;
+  color: var(--app-text-muted) !important;
   font-weight: 500;
+  border-radius: var(--radius-pill);
 }
 .nav-btn--active {
-  color: #e4572e !important;
+  color: var(--v-primary-base) !important;
+  background: var(--app-primary-tint);
 }
 </style>

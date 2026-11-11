@@ -160,6 +160,6 @@ export default {
 .order-code {
   font-family: 'Roboto Mono', Consolas, monospace;
   font-size: 0.85rem;
-  color: #4b5563;
+  color: var(--app-text-muted);
 }
 </style>

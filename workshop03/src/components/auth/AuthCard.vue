@@ -41,6 +41,6 @@ export default {
 .auth-card__title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--app-text);
 }
 </style>

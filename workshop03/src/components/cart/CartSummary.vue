@@ -44,6 +44,6 @@ export default {
 .cart-summary__total {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #e4572e;
+  color: var(--v-primary-base);
 }
 </style>

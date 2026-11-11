@@ -14,7 +14,7 @@
     <template #[`item.name`]="{ item }">
       <div class="d-flex align-center py-2">
         <div class="product-table__thumb mr-3 flex-shrink-0">
-          <ProductThumb :name="item.name" :src="item.imageUrl" font-size="1.1rem" />
+          <ProductThumb :name="item.name" :category="item.category" :src="item.imageUrl" font-size="1.1rem" />
         </div>
         <div class="product-table__text">
           <div class="font-weight-medium">{{ item.name }}</div>

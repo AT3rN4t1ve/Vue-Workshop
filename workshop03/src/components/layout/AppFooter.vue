@@ -14,6 +14,6 @@ export default {
 
 <style scoped>
 .app-footer {
-  border-top: 1px solid #e8eaee !important;
+  border-top: 1px solid var(--app-border) !important;
 }
 </style>

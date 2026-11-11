@@ -1,7 +1,7 @@
 <template>
   <div class="cart-item d-flex py-4">
     <router-link :to="detailLink" class="cart-item__thumb mr-4 flex-shrink-0">
-      <ProductThumb :name="product.name" :src="product.imageUrl" font-size="1.8rem" />
+      <ProductThumb :name="product.name" :category="product.category" :src="product.imageUrl" font-size="1.8rem" />
     </router-link>
 
     <div class="flex-grow-1 cart-item__body">
@@ -67,7 +67,7 @@ export default {
 
 <style scoped>
 .cart-item + .cart-item {
-  border-top: 1px solid #eef0f3;
+  border-top: 1px solid var(--app-border);
 }
 .cart-item__thumb {
   display: block;
@@ -79,15 +79,15 @@ export default {
 }
 .cart-item__name {
   font-weight: 500;
-  color: #1f2937;
+  color: var(--app-text);
   text-decoration: none;
 }
 .cart-item__name:hover {
-  color: #e4572e;
+  color: var(--v-primary-base);
 }
 .cart-item__total {
   font-size: 1.05rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--app-text);
 }
 </style>

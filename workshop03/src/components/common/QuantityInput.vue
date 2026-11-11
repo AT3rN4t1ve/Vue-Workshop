@@ -45,9 +45,9 @@ export default {
 .quantity-input {
   display: inline-flex;
   align-items: center;
-  border: 1px solid #d5d9e0;
+  border: 1px solid var(--app-border-strong);
   border-radius: 8px;
-  background: #fff;
+  background: var(--app-surface);
   overflow: hidden;
 }
 .quantity-input--disabled {
@@ -62,7 +62,7 @@ export default {
   cursor: pointer;
 }
 .quantity-input__btn:hover:not(:disabled) {
-  background: #f1f3f6;
+  background: var(--app-hover);
 }
 .quantity-input__btn:disabled {
   cursor: not-allowed;
@@ -72,8 +72,8 @@ export default {
   width: 48px;
   height: 36px;
   text-align: center;
-  border-left: 1px solid #d5d9e0;
-  border-right: 1px solid #d5d9e0;
+  border-left: 1px solid var(--app-border-strong);
+  border-right: 1px solid var(--app-border-strong);
   outline: none;
   font-size: 0.95rem;
   -moz-appearance: textfield;

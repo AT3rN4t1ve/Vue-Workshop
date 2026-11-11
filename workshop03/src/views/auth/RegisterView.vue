@@ -88,7 +88,7 @@ export default {
 
 <style scoped>
 .auth-link {
-  color: #e4572e;
+  color: var(--v-primary-base);
   font-weight: 500;
   text-decoration: none;
 }

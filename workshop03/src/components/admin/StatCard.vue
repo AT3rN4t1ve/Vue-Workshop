@@ -30,7 +30,7 @@ export default {
 .stat-card__value {
   font-size: 1.35rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--app-text);
   line-height: 1.3;
   white-space: nowrap;
 }

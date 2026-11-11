@@ -23,6 +23,7 @@
         <v-col cols="12" sm="5">
           <ProductThumb
             :name="product.name"
+            :category="product.category"
             :src="product.imageUrl"
             font-size="6rem"
             :class="{ 'thumb--sold-out': soldOut }"
@@ -216,17 +217,17 @@ export default {
   font-size: 1.6rem;
   font-weight: 600;
   line-height: 1.35;
-  color: #1f2937;
+  color: var(--app-text);
 }
 .detail-price-box {
-  background: #fff6f2;
+  background: var(--app-primary-tint);
   border-radius: 10px;
   padding: 14px 18px;
 }
 .detail-price {
   font-size: 2rem;
   font-weight: 700;
-  color: #e4572e;
+  color: var(--v-primary-base);
 }
 .detail-description {
   white-space: pre-line;

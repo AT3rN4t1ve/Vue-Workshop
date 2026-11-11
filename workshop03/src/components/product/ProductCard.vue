@@ -5,35 +5,39 @@
     :class="{ 'product-card--sold-out': soldOut }"
     height="100%"
   >
-    <div class="pa-3 pb-0">
-      <ProductThumb :name="product.name" :src="product.imageUrl" :aspect-ratio="4 / 3" />
+    <div class="product-card__media">
+      <ProductThumb
+        :name="product.name"
+        :category="product.category"
+        :src="product.imageUrl"
+        :aspect-ratio="4 / 3"
+        font-size="3.5rem"
+        class="product-card__thumb"
+      />
+      <StockChip v-if="showStock" :stock="product.stock" show-amount class="product-card__badge" />
     </div>
 
-    <div class="pa-3 d-flex flex-column flex-grow-1">
-      <div v-if="product.category" class="text-caption grey--text text--darken-1 text-truncate">
-        {{ product.category }}
-      </div>
-      <div class="product-card__name line-clamp-2 mb-2">{{ product.name }}</div>
+    <div class="product-card__body">
+      <div v-if="product.category" class="product-card__category text-truncate">{{ product.category }}</div>
+      <div class="product-card__name line-clamp-2">{{ product.name }}</div>
 
-      <div class="mt-auto">
-        <StockChip :stock="product.stock" class="mb-2" />
-        <div class="d-flex align-center justify-space-between">
-          <div>
-            <div v-if="hasOptions" class="text-caption grey--text text--darken-1 product-card__from">เริ่มต้น</div>
-            <span class="product-card__price tabular">{{ product.price | price }}</span>
-          </div>
-          <v-btn
-            fab
-            x-small
-            depressed
-            color="primary"
-            :disabled="soldOut"
-            :aria-label="hasOptions ? `เลือกตัวเลือกของ ${product.name}` : `เพิ่ม ${product.name} ลงตะกร้า`"
-            @click.stop.prevent="$emit('add', product)"
-          >
-            <v-icon small>{{ hasOptions ? 'mdi-tune-variant' : 'mdi-cart-plus' }}</v-icon>
-          </v-btn>
+      <div class="product-card__footer">
+        <div class="product-card__price-wrap">
+          <span v-if="hasOptions" class="product-card__from">เริ่มต้น</span>
+          <span class="product-card__price tabular">{{ product.price | price }}</span>
         </div>
+        <v-btn
+          fab
+          small
+          depressed
+          color="primary"
+          class="product-card__add"
+          :disabled="soldOut"
+          :aria-label="hasOptions ? `เลือกตัวเลือกของ ${product.name}` : `เพิ่ม ${product.name} ลงตะกร้า`"
+          @click.stop.prevent="$emit('add', product)"
+        >
+          <v-icon>{{ hasOptions ? 'mdi-tune-variant' : 'mdi-plus' }}</v-icon>
+        </v-btn>
       </div>
     </div>
   </v-card>
@@ -42,6 +46,7 @@
 <script>
 import ProductThumb from '../common/ProductThumb.vue'
 import StockChip from '../common/StockChip.vue'
+import { LOW_STOCK } from '../../utils/constants'
 
 export default {
   name: 'ProductCard',
@@ -53,6 +58,9 @@ export default {
     soldOut() {
       return this.product.stock <= 0
     },
+    showStock() {
+      return this.product.stock <= LOW_STOCK
+    },
     hasOptions() {
       return (this.product.optionGroups || []).length > 0
     },
@@ -62,30 +70,96 @@ export default {
 
 <style scoped>
 .product-card {
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .product-card:hover {
-  transform: translateY(-3px);
-  border-color: #e4572e !important;
-  box-shadow: 0 8px 20px rgba(31, 41, 55, 0.08) !important;
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md) !important;
 }
-.product-card--sold-out .product-thumb {
+.product-card:focus-visible {
+  outline: 2px solid var(--v-primary-base);
+  outline-offset: 2px;
+}
+.product-card__media {
+  position: relative;
+  overflow: hidden;
+}
+.product-card__media .product-card__thumb {
+  border-radius: 0;
+  transition: transform 0.35s ease;
+}
+.product-card:hover .product-card__thumb {
+  transform: scale(1.05);
+}
+.product-card--sold-out .product-card__thumb {
   filter: grayscale(1);
-  opacity: 0.6;
+  opacity: 0.55;
+}
+.product-card__badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  box-shadow: 0 2px 8px rgba(43, 33, 24, 0.12);
+}
+.product-card__body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 12px 14px 14px;
+}
+.product-card__category {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--app-text-soft);
+  margin-bottom: 2px;
 }
 .product-card__name {
-  font-size: 0.95rem;
+  font-family: var(--font-heading);
+  font-size: 1rem;
   font-weight: 500;
   line-height: 1.4;
-  color: #1f2937;
+  color: var(--app-text);
   min-height: 2.8em;
 }
+.product-card__footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 10px;
+}
+.product-card__price-wrap {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
 .product-card__from {
-  line-height: 1.1;
+  font-size: 0.72rem;
+  color: var(--app-text-soft);
 }
 .product-card__price {
-  font-size: 1.15rem;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
   font-weight: 600;
-  color: #e4572e;
+  color: var(--v-primary-base);
+}
+.product-card__add {
+  flex-shrink: 0;
+  box-shadow: 0 6px 14px rgba(228, 87, 46, 0.3) !important;
+}
+.product-card__add.v-btn--disabled {
+  box-shadow: none !important;
+}
+@media (max-width: 600px) {
+  .product-card__body {
+    padding: 10px 10px 12px;
+  }
+  .product-card__name {
+    font-size: 0.92rem;
+  }
+  .product-card__price {
+    font-size: 1.05rem;
+  }
 }
 </style>
