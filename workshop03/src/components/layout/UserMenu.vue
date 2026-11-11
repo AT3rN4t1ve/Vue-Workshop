@@ -30,6 +30,13 @@
         <v-divider class="my-1" />
       </div>
 
+      <v-list-item :to="{ name: 'profile' }" color="primary">
+        <v-list-item-icon class="mr-3">
+          <v-icon>mdi-account-edit-outline</v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>โปรไฟล์ของฉัน</v-list-item-title>
+      </v-list-item>
+
       <v-list-item @click="logout">
         <v-list-item-icon class="mr-3">
           <v-icon>mdi-logout</v-icon>

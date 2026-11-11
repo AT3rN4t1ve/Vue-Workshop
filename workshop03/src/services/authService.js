@@ -21,4 +21,16 @@ export default {
   approveUser(id) {
     return http.put(`/users/${id}/approve`)
   },
+
+  getMe() {
+    return http.get('/me')
+  },
+
+  updateMe({ firstName, lastName }) {
+    return http.put('/me', { firstName, lastName })
+  },
+
+  changePassword({ currentPassword, newPassword }) {
+    return http.put('/me/password', { currentPassword, newPassword })
+  },
 }

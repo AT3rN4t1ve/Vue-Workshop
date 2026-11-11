@@ -10,6 +10,7 @@ import CartView from '../views/CartView.vue'
 import ManageProductsView from '../views/admin/ManageProductsView.vue'
 import OrdersView from '../views/OrdersView.vue'
 import ManageUsersView from '../views/admin/ManageUsersView.vue'
+import ProfileView from '../views/ProfileView.vue'
 
 Vue.use(VueRouter)
 
@@ -20,6 +21,7 @@ const routes = [
   { path: '/products/:id', name: 'product-detail', component: ProductDetailView, props: true, meta: { title: 'รายละเอียดเมนู' } },
   { path: '/cart', name: 'cart', component: CartView, meta: { title: 'ตะกร้า' } },
   { path: '/orders', name: 'orders', component: OrdersView, meta: { title: 'ออเดอร์' } },
+  { path: '/profile', name: 'profile', component: ProfileView, meta: { title: 'โปรไฟล์ของฉัน' } },
   { path: '/admin/products', name: 'manage-products', component: ManageProductsView, meta: { title: 'จัดการเมนู', admin: true } },
   { path: '/admin/users', name: 'manage-users', component: ManageUsersView, meta: { title: 'ผู้ใช้', admin: true } },
   { path: '*', redirect: '/' },

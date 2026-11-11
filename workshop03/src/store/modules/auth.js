@@ -46,6 +46,9 @@ export default {
       state.token = token
       state.user = user
     },
+    SET_USER(state, user) {
+      state.user = user
+    },
     CLEAR_SESSION(state) {
       state.token = null
       state.user = null
@@ -55,6 +58,12 @@ export default {
   actions: {
     async login({ commit }, credentials) {
       commit('SET_SESSION', await authService.login(credentials))
+    },
+    async fetchMe({ commit }) {
+      commit('SET_USER', await authService.getMe())
+    },
+    async updateProfile({ commit }, profile) {
+      commit('SET_USER', await authService.updateMe(profile))
     },
     logout({ commit }) {
       commit('CLEAR_SESSION')

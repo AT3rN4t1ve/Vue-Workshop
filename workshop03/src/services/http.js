@@ -38,6 +38,14 @@ const MESSAGES = {
   'duplicate choice name in option group': 'ชื่อตัวเลือกในกลุ่มเดียวกันซ้ำกัน',
   'duplicate option group name': 'ชื่อกลุ่มตัวเลือกซ้ำกัน',
   'invalid JSON body': 'ข้อมูลที่ส่งไม่ถูกต้อง',
+  'firstName is required': 'กรุณากรอกชื่อ',
+  'lastName is required': 'กรุณากรอกนามสกุล',
+  'firstName must be up to 50 characters': 'ชื่อยาวได้ไม่เกิน 50 ตัวอักษร',
+  'lastName must be up to 50 characters': 'นามสกุลยาวได้ไม่เกิน 50 ตัวอักษร',
+  'current and new password are required': 'กรุณากรอกรหัสผ่านเดิมและรหัสผ่านใหม่',
+  'password must be at least 6 characters': 'รหัสผ่านต้องยาวอย่างน้อย 6 ตัวอักษร',
+  'current password is incorrect': 'รหัสผ่านเดิมไม่ถูกต้อง',
+  'new password must be different': 'รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านเดิม',
   'internal server error': 'เซิร์ฟเวอร์ขัดข้อง กรุณาลองใหม่อีกครั้ง',
 }
 
