@@ -1,52 +1,65 @@
 <template>
   <v-container class="py-8 py-sm-12">
     <v-row justify="center">
-      <v-col cols="12" sm="9" md="6" lg="5" xl="4">
-        <div class="text-center mb-6">
-          <v-avatar size="64" class="hero-icon mb-3">
-            <v-icon size="34" color="white">mdi-school-outline</v-icon>
+      <v-col cols="12" sm="10" md="11" lg="9" xl="7">
+        <div class="hero d-flex align-center justify-center mb-6">
+          <v-avatar size="56" class="hero-icon mr-4">
+            <v-icon size="30" color="white">mdi-school-outline</v-icon>
           </v-avatar>
-          <h1 class="hero-title">โปรแกรมตัดเกรด</h1>
-          <p class="hero-subtitle mb-0">กรอกคะแนนเพื่อดูเกรดที่ได้ทันที</p>
+          <div>
+            <h1 class="hero-title">โปรแกรมตัดเกรด</h1>
+            <p class="hero-subtitle mb-0">กรอกคะแนนเพื่อดูเกรดที่ได้ทันที</p>
+          </div>
         </div>
 
         <v-card class="main-card pa-5 pa-sm-7">
-          <v-text-field
-            v-model="score"
-            label="คะแนน (0 - 100)"
-            placeholder="เช่น 75"
-            prepend-inner-icon="mdi-pencil-outline"
-            inputmode="decimal"
-            outlined
-            rounded
-            clearable
-            autofocus
-            hide-details="auto"
-            :error-messages="error"
-            @input="error = ''"
-            @keyup.enter="calculateGrade"
-          />
+          <v-row>
+            <v-col cols="12" md="7" class="pr-md-6">
+              <v-text-field
+                v-model="score"
+                label="คะแนน (0 - 100)"
+                placeholder="เช่น 75"
+                prepend-inner-icon="mdi-pencil-outline"
+                inputmode="decimal"
+                outlined
+                rounded
+                clearable
+                autofocus
+                hide-details="auto"
+                :error-messages="error"
+                @input="error = ''"
+                @keyup.enter="calculateGrade"
+              />
 
-          <v-btn
-            class="submit-btn mt-4"
-            block
-            x-large
-            rounded
-            depressed
-            dark
-            @click="calculateGrade"
-          >
-            <v-icon left>mdi-calculator-variant-outline</v-icon>
-            ตัดเกรด
-          </v-btn>
+              <v-btn
+                class="submit-btn mt-4"
+                block
+                x-large
+                rounded
+                depressed
+                dark
+                @click="calculateGrade"
+              >
+                <v-icon left>mdi-calculator-variant-outline</v-icon>
+                ตัดเกรด
+              </v-btn>
 
-          <v-expand-transition>
-            <div v-if="grade" :key="resultKey">
-              <GradeResult class="mt-6" :score="checkedScore" :item="current" />
-            </div>
-          </v-expand-transition>
+              <v-expand-transition>
+                <div v-if="grade" :key="resultKey">
+                  <GradeResult class="mt-6" :score="checkedScore" :item="current" />
+                </div>
+              </v-expand-transition>
 
-          <GradeScale class="mt-7" :items="gradeTable" :active-grade="grade" />
+              <div v-if="!grade" class="result-placeholder mt-6">
+                <v-icon size="40" color="#c7c9e0">mdi-chart-donut</v-icon>
+                <div class="mt-2">ผลการตัดเกรดจะแสดงที่นี่</div>
+              </div>
+            </v-col>
+
+            <v-col cols="12" md="5" class="scale-col pl-md-6">
+              <GradeScale :items="gradeTable" :active-grade="grade" />
+            </v-col>
+          </v-row>
         </v-card>
 
         <p class="footer-note text-center mt-6 mb-0">Workshop 2 · Vue + Vuetify</p>
@@ -140,6 +153,29 @@ export default {
 
 .hero-subtitle {
   color: #6b7280;
+}
+
+.result-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 182px;
+  border: 1.5px dashed #dcdff0;
+  border-radius: 20px;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.scale-col {
+  border-top: 1px solid #eceef6;
+}
+
+@media (min-width: 960px) {
+  .scale-col {
+    border-top: none;
+    border-left: 1px solid #eceef6;
+  }
 }
 
 .main-card {

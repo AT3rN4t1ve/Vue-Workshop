@@ -30,8 +30,11 @@
         <div class="grid">
           <EducationCard class="span-2" :education="profile.education" />
           <FreeDesignCard :design="profile.freeDesign" />
-          <div id="strengths" class="grid span-3">
-            <StrengthItem v-for="s in profile.strengths" :key="s.title" v-bind="s" />
+          <div id="strengths" class="span-3 strengths">
+            <SectionTitle v-reveal eyebrow="Strengths" title="จุดแข็งของผม" />
+            <div class="grid">
+              <StrengthItem v-for="s in profile.strengths" :key="s.title" v-bind="s" />
+            </div>
           </div>
         </div>
       </section>
@@ -289,6 +292,9 @@ body {
 }
 .span-3 {
   grid-column: span 3;
+}
+.strengths {
+  margin-top: 24px;
 }
 .group-head {
   display: inline-block;

@@ -7,11 +7,11 @@
           {{ profile.firstName }} {{ profile.lastName }}
           <span class="nick">"{{ profile.nickname }}"</span>
         </h1>
-        <p class="role">
-          ผมเป็น <TypewriterText :words="profile.roles" />
-        </p>
         <p v-if="profile.location" class="loc">📍 {{ profile.location }}</p>
-        <p class="tagline">{{ profile.tagline }}</p>
+        <blockquote v-if="taglines.length" class="tagline">
+          <span class="tagline__mark" aria-hidden="true">“</span>
+          <p v-for="(line, i) in taglines" :key="i" :class="{ 'tagline__lead': i === 0 }">{{ line }}</p>
+        </blockquote>
       </div>
     </div>
 
@@ -30,18 +30,21 @@
 </template>
 
 <script>
-import TypewriterText from '../base/TypewriterText.vue'
 import { onScrollFrame, prefersReducedMotion } from '../../utils/motion'
 
 export default {
   name: 'HeroSection',
-  components: { TypewriterText },
   props: {
     profile: { type: Object, required: true },
   },
   computed: {
     initial() {
       return this.profile.nickname.charAt(0)
+    },
+    taglines() {
+      const t = this.profile.tagline
+      if (!t) return []
+      return Array.isArray(t) ? t : [t]
     },
   },
   mounted() {
@@ -187,23 +190,60 @@ h1 {
   background-clip: text;
   color: transparent;
 }
-.role {
-  margin: 16px 0 6px;
-  min-height: 1.4em;
-  font-size: clamp(20px, 3vw, 28px);
-  font-weight: 700;
-  color: var(--text);
-}
 .loc {
-  margin: 0 0 12px;
+  margin: 16px 0 0;
   font-size: 14px;
   color: var(--muted);
 }
 .tagline {
-  max-width: 520px;
+  position: relative;
+  max-width: 540px;
+  margin: 20px 0 0;
+  padding: 22px 24px 22px 28px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 12px 32px -18px var(--shadow);
+  overflow: hidden;
+  text-align: left;
+}
+.tagline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--gradient);
+}
+.tagline__mark {
+  position: absolute;
+  top: -18px;
+  right: 14px;
+  font-size: 96px;
+  font-family: Georgia, serif;
+  line-height: 1;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 0.25;
+  pointer-events: none;
+}
+.tagline p {
   margin: 0;
   color: var(--muted);
-  line-height: 1.7;
+  font-size: 15px;
+  line-height: 1.8;
+}
+.tagline p + p {
+  margin-top: 10px;
+}
+.tagline .tagline__lead {
+  color: var(--text);
+  font-weight: 500;
 }
 
 @media (min-width: 768px) {
@@ -223,7 +263,7 @@ h1 {
     max-width: none;
   }
   .tagline {
-    margin: 0 auto;
+    margin: 20px auto 0;
   }
 }
 @media (max-width: 360px) {

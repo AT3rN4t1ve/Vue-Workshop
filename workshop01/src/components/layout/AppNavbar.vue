@@ -44,7 +44,13 @@ export default {
           to: 'skills',
           label: 'การเรียน & ความถนัด',
           short: 'ความถนัด',
-          group: ['skills', 'education', 'free-design', 'strengths'],
+          group: ['skills', 'education', 'free-design'],
+        },
+        {
+          to: 'strengths',
+          label: 'จุดแข็ง',
+          short: 'จุดแข็ง',
+          group: ['strengths'],
         },
       ],
     }
@@ -142,6 +148,13 @@ export default {
 @media (max-width: 400px) {
   .logo {
     font-size: 17px;
+  }
+  .links {
+    gap: 2px;
+  }
+  .links a {
+    padding: 6px 6px;
+    font-size: 12px;
   }
 }
 </style>
