@@ -31,6 +31,26 @@
                 @keyup.enter="calculateGrade"
               />
 
+              <v-slider
+                :value="sliderValue"
+                class="mt-5"
+                color="#6d28d9"
+                track-color="#e4e2f5"
+                min="0"
+                max="100"
+                step="1"
+                thumb-label
+                hide-details
+                @input="onSlide"
+              >
+                <template #prepend>
+                  <span class="slider-edge">0</span>
+                </template>
+                <template #append>
+                  <span class="slider-edge">100</span>
+                </template>
+              </v-slider>
+
               <v-btn
                 class="submit-btn mt-4"
                 block
@@ -45,7 +65,7 @@
               </v-btn>
 
               <v-expand-transition>
-                <div v-if="grade" :key="resultKey">
+                <div v-if="grade">
                   <GradeResult class="mt-6" :score="checkedScore" :item="current" />
                 </div>
               </v-expand-transition>
@@ -57,7 +77,11 @@
             </v-col>
 
             <v-col cols="12" md="5" class="scale-col pl-md-6">
-              <GradeScale :items="gradeTable" :active-grade="grade" />
+              <GradeScale
+                :items="gradeTable"
+                :active-grade="grade"
+                :score="grade ? checkedScore : null"
+              />
             </v-col>
           </v-row>
         </v-card>
@@ -85,13 +109,12 @@ export default {
     checkedScore: null,
     grade: '',
     error: '',
-    resultKey: 0,
     gradeTable: [
-      { grade: 'A', range: '80 - 100', label: 'ดีเยี่ยม', color: '#16A34A', soft: '#ECFDF3' },
-      { grade: 'B', range: '70 - 79', label: 'ดี', color: '#0D9488', soft: '#EBFBF8' },
-      { grade: 'C', range: '60 - 69', label: 'พอใช้', color: '#D97706', soft: '#FFF7E6' },
-      { grade: 'D', range: '50 - 59', label: 'ผ่าน', color: '#EA580C', soft: '#FFF1E8' },
-      { grade: 'F', range: '0 - 49', label: 'ไม่ผ่าน', color: '#DC2626', soft: '#FEEEEE' },
+      { grade: 'A', min: 80, range: '80 - 100', label: 'ดีเยี่ยม', color: '#16A34A', soft: '#ECFDF3' },
+      { grade: 'B', min: 70, range: '70 - 79', label: 'ดี', color: '#0D9488', soft: '#EBFBF8' },
+      { grade: 'C', min: 60, range: '60 - 69', label: 'พอใช้', color: '#D97706', soft: '#FFF7E6' },
+      { grade: 'D', min: 50, range: '50 - 59', label: 'ผ่าน', color: '#EA580C', soft: '#FFF1E8' },
+      { grade: 'F', min: 0, range: '0 - 49', label: 'ไม่ผ่าน', color: '#DC2626', soft: '#FEEEEE' },
     ],
   }),
 
@@ -99,9 +122,20 @@ export default {
     current() {
       return this.gradeTable.find((item) => item.grade === this.grade) || {}
     },
+
+    sliderValue() {
+      const value = Number(this.score)
+      if (this.score === '' || this.score == null || Number.isNaN(value)) return 0
+      return Math.min(100, Math.max(0, value))
+    },
   },
 
   methods: {
+    onSlide(value) {
+      this.score = String(value)
+      this.calculateGrade()
+    },
+
     calculateGrade() {
       this.grade = ''
       this.error = ''
@@ -126,13 +160,7 @@ export default {
       }
 
       this.checkedScore = value
-      this.resultKey += 1
-
-      if (value >= 80) this.grade = 'A'
-      else if (value >= 70) this.grade = 'B'
-      else if (value >= 60) this.grade = 'C'
-      else if (value >= 50) this.grade = 'D'
-      else this.grade = 'F'
+      this.grade = this.gradeTable.find((item) => value >= item.min).grade
     },
   },
 }
@@ -194,6 +222,12 @@ export default {
 .submit-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 22px rgba(79, 70, 229, 0.35);
+}
+
+.slider-edge {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-variant-numeric: tabular-nums;
 }
 
 .footer-note {
