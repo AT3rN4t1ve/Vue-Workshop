@@ -1,7 +1,7 @@
 <template>
   <div>
-    <PageHeader title="ตะกร้า" :subtitle="items.length ? `${items.length} รายการ` : ''">
-      <v-btn v-if="items.length" text color="error" :disabled="processing" @click="clearDialog = true">
+    <PageHeader title="ตะกร้าของฉัน" :subtitle="items.length ? `${items.length} รายการ · ตรวจสอบตัวเลือกก่อนยืนยันสั่ง` : ''">
+      <v-btn v-if="items.length" text rounded color="error" :disabled="processing" @click="clearDialog = true">
         <v-icon left>mdi-trash-can-outline</v-icon>
         ล้างตะกร้า
       </v-btn>
@@ -9,13 +9,13 @@
 
     <v-card v-if="items.length === 0" class="surface-card">
       <EmptyState icon="mdi-cart-outline" title="ตะกร้ายังว่างอยู่" text="เลือกเมนูที่อยากกินแล้วกดเพิ่มลงตะกร้าได้เลย">
-        <v-btn depressed color="primary" to="/">ไปเลือกเมนู</v-btn>
+        <v-btn depressed rounded large color="primary" to="/">ไปเลือกเมนู</v-btn>
       </EmptyState>
     </v-card>
 
     <v-row v-else>
       <v-col cols="12" md="8">
-        <v-card class="surface-card px-5 py-1">
+        <v-card class="surface-card px-5 py-2">
           <CartItem
             v-for="item in items"
             :key="item.key"

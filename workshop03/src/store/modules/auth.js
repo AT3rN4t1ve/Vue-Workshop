@@ -65,6 +65,12 @@ export default {
     async updateProfile({ commit }, profile) {
       commit('SET_USER', await authService.updateMe(profile))
     },
+    async updateAvatar({ commit }, avatar) {
+      commit('SET_USER', await authService.updateAvatar(avatar))
+    },
+    async removeAvatar({ commit }) {
+      commit('SET_USER', await authService.removeAvatar())
+    },
     logout({ commit }) {
       commit('CLEAR_SESSION')
       commit('cart/CLEAR', null, { root: true })

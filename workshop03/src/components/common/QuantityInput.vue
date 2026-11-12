@@ -1,5 +1,5 @@
 <template>
-  <div class="quantity-input" :class="{ 'quantity-input--disabled': disabled }">
+  <div class="quantity-input" :class="{ 'quantity-input--disabled': disabled, 'quantity-input--large': large }">
     <button type="button" class="quantity-input__btn" aria-label="ลดจำนวน" :disabled="disabled || value <= min" @click="change(value - 1)">
       <v-icon small>mdi-minus</v-icon>
     </button>
@@ -28,6 +28,7 @@ export default {
     min: { type: Number, default: 1 },
     max: { type: Number, default: 99 },
     disabled: { type: Boolean, default: false },
+    large: { type: Boolean, default: false },
   },
   methods: {
     change(raw, event) {
@@ -45,38 +46,55 @@ export default {
 .quantity-input {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--app-border-strong);
-  border-radius: 8px;
+  gap: 2px;
+  padding: 2px;
+  border: 1.5px solid var(--app-border-strong);
+  border-radius: var(--radius-pill);
   background: var(--app-surface);
-  overflow: hidden;
 }
 .quantity-input--disabled {
   opacity: 0.55;
 }
 .quantity-input__btn {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  background: var(--app-surface-muted);
   cursor: pointer;
+  transition: background 0.15s ease;
+}
+.quantity-input--large .quantity-input__btn {
+  width: 44px;
+  height: 44px;
 }
 .quantity-input__btn:hover:not(:disabled) {
-  background: var(--app-hover);
+  background: var(--app-primary-tint);
+}
+.quantity-input__btn:focus-visible {
+  outline: 2px solid var(--v-primary-base);
+  outline-offset: 1px;
 }
 .quantity-input__btn:disabled {
   cursor: not-allowed;
   opacity: 0.35;
 }
 .quantity-input__field {
-  width: 48px;
-  height: 36px;
+  width: 44px;
+  height: 38px;
   text-align: center;
-  border-left: 1px solid var(--app-border-strong);
-  border-right: 1px solid var(--app-border-strong);
   outline: none;
-  font-size: 0.95rem;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--app-text);
   -moz-appearance: textfield;
+}
+.quantity-input--large .quantity-input__field {
+  height: 44px;
+  font-size: 1.1rem;
 }
 .quantity-input__field::-webkit-outer-spin-button,
 .quantity-input__field::-webkit-inner-spin-button {

@@ -1,27 +1,38 @@
 :root {
-  --app-bg: #fbf7f2;
+  /* พื้นและตัวอักษร */
+  --app-bg: #fffaf5;
   --app-surface: #ffffff;
+  --app-surface-muted: #f8f1ea;
   --app-text: #2b2118;
   --app-text-muted: #6b5e53;
-  --app-text-soft: #8c7f74;
-  --app-border: #efe5da;
-  --app-border-strong: #ddd0c2;
-  --app-hover: #f7efe6;
-  --app-primary-tint: #fff1e8;
+  --app-text-soft: #6b5e53;
+  --app-border: #f2e8dd;
+  --app-border-strong: #e3d6c8;
+  --app-hover: #fbf3ea;
+
+  /* สีแบรนด์ */
+  --app-primary-dark: #a9371a;
+  --app-primary-tint: #fcebe3;
+  --app-accent: #e9a23b;
+  /* โซนเด่นแบบสว่าง (แทนพื้นเข้มเดิม) */
+  --app-soft: #fff1e6;
+  --app-soft-raised: #ffe1cc;
+  --app-sun: #ffe7b3;
 
   --font-heading: 'Prompt', 'IBM Plex Sans Thai', sans-serif;
   --font-emoji: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
 
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-lg: 20px;
   --radius-xl: 24px;
   --radius-pill: 999px;
 
-  --shadow-sm: 0 1px 2px rgba(43, 33, 24, 0.04), 0 4px 14px rgba(43, 33, 24, 0.05);
-  --shadow-md: 0 14px 32px rgba(43, 33, 24, 0.12);
+  --shadow-sm: 0 1px 2px rgba(43, 33, 24, 0.05), 0 4px 14px rgba(43, 33, 24, 0.06);
+  --shadow-md: 0 16px 36px rgba(43, 33, 24, 0.14);
+  --shadow-primary: 0 8px 20px rgba(200, 68, 31, 0.28);
 
-  --header-height: 64px;
+  --header-height: 68px;
 }
 
 .theme--light.v-application {
@@ -76,4 +87,49 @@
 
 .avatar-tint {
   background: var(--app-primary-tint) !important;
+}
+
+/* โลโก้ชามข้าว ใช้ร่วมกันทั้ง header, footer */
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--v-primary-base);
+  color: #fff;
+}
+
+/* เปลี่ยนหน้า: fade + เลื่อนขึ้นเล็กน้อย */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.page-enter,
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* badge ตะกร้าเด้งเมื่อมีของเพิ่ม */
+@keyframes badge-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+.badge-bump {
+  animation: badge-bump 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

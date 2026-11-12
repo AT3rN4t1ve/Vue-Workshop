@@ -9,11 +9,11 @@
         <div class="flex-grow-1 mr-2">
           <router-link :to="detailLink" class="cart-item__name line-clamp-2">{{ product.name }}</router-link>
           <div v-if="optionsLabel" class="text-body-2 grey--text text--darken-2">{{ optionsLabel }}</div>
-          <div v-if="item.note" class="text-body-2 grey--text text--darken-2">หมายเหตุ: {{ item.note }}</div>
+          <div v-if="item.note" class="cart-item__note">หมายเหตุ: {{ item.note }}</div>
           <div class="text-body-2 grey--text text--darken-1 tabular">{{ unit | price }} / จาน</div>
         </div>
-        <v-btn icon small :disabled="disabled" :aria-label="`ลบ ${product.name} ออกจากตะกร้า`" @click="$emit('remove', item.key)">
-          <v-icon small>mdi-trash-can-outline</v-icon>
+        <v-btn icon class="cart-item__remove" :disabled="disabled" :aria-label="`ลบ ${product.name} ออกจากตะกร้า`" @click="$emit('remove', item.key)">
+          <v-icon small color="error">mdi-trash-can-outline</v-icon>
         </v-btn>
       </div>
 
@@ -71,14 +71,31 @@ export default {
 }
 .cart-item__thumb {
   display: block;
-  width: 84px;
+  width: 88px;
   text-decoration: none;
+}
+.cart-item__thumb >>> .product-thumb {
+  border-radius: 16px;
+}
+.cart-item__note {
+  display: inline-block;
+  margin: 4px 0;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: #fff4d6;
+  color: #7a4f00;
+  font-size: 0.85rem;
+}
+.cart-item__remove {
+  background: var(--app-bg);
 }
 .cart-item__body {
   min-width: 0;
 }
 .cart-item__name {
-  font-weight: 500;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
   color: var(--app-text);
   text-decoration: none;
 }
@@ -86,7 +103,8 @@ export default {
   color: var(--v-primary-base);
 }
 .cart-item__total {
-  font-size: 1.05rem;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
   font-weight: 600;
   color: var(--app-text);
 }

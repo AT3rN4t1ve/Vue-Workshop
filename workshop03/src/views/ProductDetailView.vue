@@ -1,112 +1,97 @@
 <template>
   <div>
-    <v-btn text class="mb-3 ml-n3" to="/" exact>
-      <v-icon left>mdi-arrow-left</v-icon>
+    <v-btn text rounded class="mb-3 ml-n3 back-btn" to="/" exact>
+      <v-icon left>mdi-chevron-left</v-icon>
       กลับไปหน้าเมนู
     </v-btn>
 
-    <v-card v-if="loading" class="surface-card pa-6">
-      <v-row>
-        <v-col cols="12" md="5"><v-skeleton-loader type="image, image" /></v-col>
-        <v-col cols="12" md="7"><v-skeleton-loader type="heading, paragraph, sentences, actions" /></v-col>
-      </v-row>
-    </v-card>
+    <div v-if="loading" class="detail-layout">
+      <v-skeleton-loader type="image" class="detail-media surface-card" />
+      <v-card class="surface-card detail-panel"><v-skeleton-loader type="heading, paragraph, sentences, actions" /></v-card>
+    </div>
 
     <v-card v-else-if="!product" class="surface-card">
       <EmptyState icon="mdi-food-off-outline" title="ไม่พบเมนูนี้" text="เมนูอาจถูกลบไปแล้ว">
-        <v-btn depressed color="primary" to="/">กลับไปเลือกเมนู</v-btn>
+        <v-btn depressed rounded color="primary" to="/">กลับไปเลือกเมนู</v-btn>
       </EmptyState>
     </v-card>
 
-    <v-card v-else class="surface-card pa-4 pa-md-6">
-      <v-row>
-        <v-col cols="12" sm="5">
-          <ProductThumb
-            :name="product.name"
-            :category="product.category"
-            :src="product.imageUrl"
-            font-size="6rem"
-            :class="{ 'thumb--sold-out': soldOut }"
-          />
-        </v-col>
+    <div v-else class="detail-layout">
+      <div class="detail-media">
+        <ProductThumb
+          :name="product.name"
+          :category="product.category"
+          :src="product.imageUrl"
+          :aspect-ratio="4 / 3"
+          font-size="7rem"
+          class="detail-thumb"
+          :class="{ 'thumb--sold-out': soldOut }"
+        />
+        <div class="d-flex flex-wrap detail-tags">
+          <StockChip :stock="product.stock" show-amount />
+          <span v-if="inCart > 0" class="detail-tag">มีในตะกร้าแล้ว {{ inCart }} จาน</span>
+        </div>
+      </div>
 
-        <v-col cols="12" sm="7" class="d-flex flex-column">
-          <div class="d-flex align-center flex-wrap mb-3">
-            <StockChip :stock="product.stock" class="mr-2" />
-            <v-chip v-if="product.category" small outlined>{{ product.category }}</v-chip>
-          </div>
-          <h1 class="detail-name mb-3">{{ product.name }}</h1>
-
-          <div class="detail-price-box mb-5">
-            <span class="detail-price tabular">{{ unit | price }}</span>
-            <span v-if="unit !== product.price" class="text-body-2 grey--text text--darken-1 ml-2">
-              (ราคาเริ่มต้น {{ product.price | price }} + ตัวเลือก)
+      <v-card class="surface-card detail-panel">
+        <div class="detail-head">
+          <div v-if="product.category" class="detail-category">{{ product.category }}</div>
+          <h1 class="detail-name">{{ product.name }}</h1>
+          <p v-if="product.description" class="detail-description">{{ product.description }}</p>
+          <div class="detail-price tabular">
+            {{ unit | price }}
+            <span v-if="unit !== product.price" class="detail-price__base">
+              เริ่มต้น {{ product.price | price }} + ตัวเลือก
             </span>
           </div>
+        </div>
 
-          <div class="text-subtitle-2 font-weight-bold mb-1">รายละเอียด</div>
-          <p class="detail-description text-body-1 grey--text text--darken-2 mb-5">
-            {{ product.description || 'ไม่มีรายละเอียดเพิ่มเติม' }}
-          </p>
+        <fieldset v-for="group in optionGroups" :key="group.name" class="option-group">
+          <legend class="option-group__legend">
+            {{ group.name }}
+            <span class="option-group__badge" :class="{ 'option-group__badge--required': group.isRequired }">
+              {{ group.isRequired ? 'ต้องเลือก' : 'ไม่บังคับ' }} · {{ group.isMultiple ? 'เลือกได้หลายอย่าง' : 'เลือก 1 อย่าง' }}
+            </span>
+          </legend>
+          <v-chip-group
+            v-model="picked[group.name]"
+            :multiple="group.isMultiple"
+            column
+            active-class="option-chip--active"
+          >
+            <v-chip v-for="choice in group.choices" :key="choice.name" :value="choice.name" class="option-chip" outlined>
+              {{ choice.name }}
+              <span v-if="choice.price > 0" class="option-chip__price tabular">+{{ choice.price | price }}</span>
+            </v-chip>
+          </v-chip-group>
+        </fieldset>
 
-          <div v-for="group in optionGroups" :key="group.name" class="mb-4">
-            <div class="d-flex align-center flex-wrap">
-              <span class="text-subtitle-2 font-weight-bold mr-2">{{ group.name }}</span>
-              <v-chip x-small label :color="group.isRequired ? 'primary' : ''" class="mr-2">
-                {{ group.isRequired ? 'ต้องเลือก' : 'ไม่บังคับ' }}
-              </v-chip>
-              <span class="text-caption grey--text text--darken-1">
-                {{ group.isMultiple ? 'เลือกได้หลายอย่าง' : 'เลือกได้ 1 อย่าง' }}
-              </span>
-            </div>
-            <v-chip-group v-model="picked[group.name]" :multiple="group.isMultiple" column active-class="primary--text">
-              <v-chip v-for="choice in group.choices" :key="choice.name" :value="choice.name" filter outlined>
-                {{ choice.name }}
-                <span v-if="choice.price > 0" class="ml-1 tabular">+{{ choice.price | price }}</span>
-              </v-chip>
-            </v-chip-group>
-          </div>
+        <v-textarea
+          v-model="note"
+          label="หมายเหตุถึงแม่ครัว (ถ้ามี)"
+          placeholder="เช่น ไม่ใส่ผัก เผ็ดน้อย"
+          rows="2"
+          auto-grow
+          outlined
+          :counter="NOTE_MAX_LENGTH"
+          :maxlength="NOTE_MAX_LENGTH"
+          class="mt-2"
+        />
 
-          <v-textarea
-            v-model="note"
-            label="หมายเหตุถึงร้าน (ถ้ามี)"
-            placeholder="เช่น ไม่ใส่ผัก เผ็ดน้อย"
-            rows="2"
-            auto-grow
-            outlined
-            dense
-            :counter="NOTE_MAX_LENGTH"
-            :maxlength="NOTE_MAX_LENGTH"
-          />
+        <div class="detail-footer">
+          <QuantityInput v-model="quantity" large :max="Math.max(available, 1)" :disabled="available <= 0" />
+          <v-btn color="primary" depressed rounded x-large class="detail-add" :disabled="!canAdd" @click="addToCart">
+            <v-icon left>mdi-basket-plus-outline</v-icon>
+            ใส่ตะกร้า · {{ unit * quantity | price }}
+          </v-btn>
+          <v-btn outlined rounded x-large color="primary" :disabled="!canAdd" @click="buyNow">สั่งเลย</v-btn>
+        </div>
 
-          <div class="mt-auto">
-            <div class="d-flex align-center flex-wrap mb-5">
-              <span class="text-body-2 grey--text text--darken-1 mr-4">จำนวน</span>
-              <QuantityInput v-model="quantity" :max="Math.max(available, 1)" :disabled="available <= 0" />
-              <span v-if="inCart > 0" class="text-caption grey--text text--darken-1 ml-4">
-                มีในตะกร้าแล้ว {{ inCart }} จาน
-              </span>
-            </div>
-
-            <div class="d-flex flex-wrap detail-actions">
-              <v-btn color="primary" outlined large :disabled="!canAdd" @click="addToCart">
-                <v-icon left>mdi-cart-plus</v-icon>
-                เพิ่มลงตะกร้า · {{ unit * quantity | price }}
-              </v-btn>
-              <v-btn color="primary" depressed large :disabled="!canAdd" @click="buyNow">
-                สั่งเลย
-              </v-btn>
-            </div>
-
-            <div v-if="soldOut" class="text-body-2 error--text mt-3">เมนูนี้หมดชั่วคราว</div>
-            <div v-else-if="available <= 0" class="text-body-2 grey--text text--darken-1 mt-3">
-              คุณใส่เมนูนี้ในตะกร้าครบจำนวนที่เหลือแล้ว
-            </div>
-            <div v-else-if="optionError" class="text-body-2 grey--text text--darken-1 mt-3">{{ optionError }}</div>
-          </div>
-        </v-col>
-      </v-row>
-    </v-card>
+        <div v-if="soldOut" class="detail-hint error--text">เมนูนี้หมดชั่วคราว</div>
+        <div v-else-if="available <= 0" class="detail-hint">คุณใส่เมนูนี้ในตะกร้าครบจำนวนที่เหลือแล้ว</div>
+        <div v-else-if="optionError" class="detail-hint">{{ optionError }}</div>
+      </v-card>
+    </div>
   </div>
 </template>
 
@@ -209,30 +194,165 @@ export default {
 </script>
 
 <style scoped>
+.back-btn {
+  color: var(--app-text-muted) !important;
+}
+.detail-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 28px;
+}
+.detail-media {
+  flex: 1 1 380px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.detail-thumb {
+  border-radius: var(--radius-xl) !important;
+  overflow: hidden;
+}
 .thumb--sold-out {
   filter: grayscale(1);
   opacity: 0.6;
 }
-.detail-name {
-  font-size: 1.6rem;
+.detail-tags {
+  gap: 8px;
+}
+.detail-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+  font-size: 0.8rem;
+  color: var(--app-text-muted);
+}
+.detail-panel {
+  flex: 1 1 420px;
+  min-width: 0;
+  padding: 28px;
+}
+.detail-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.detail-category {
+  font-size: 0.85rem;
   font-weight: 600;
-  line-height: 1.35;
+  color: var(--app-text-muted);
+}
+.detail-name {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 700;
+  line-height: 1.3;
   color: var(--app-text);
 }
-.detail-price-box {
-  background: var(--app-primary-tint);
-  border-radius: 10px;
-  padding: 14px 18px;
+.detail-description {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--app-text-muted);
+  white-space: pre-line;
 }
 .detail-price {
-  font-size: 2rem;
+  margin-top: 4px;
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--v-primary-base);
 }
-.detail-description {
-  white-space: pre-line;
+.detail-price__base {
+  margin-left: 6px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--app-text-muted);
 }
-.detail-actions {
+.option-group {
+  border: none;
+  margin: 0 0 16px;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--app-border);
+}
+.option-group__legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--app-text);
+}
+.option-group__badge {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--radius-pill);
+  background: var(--app-surface-muted);
+  font-family: 'IBM Plex Sans Thai', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--app-text-muted);
+}
+.option-group__badge--required {
+  background: var(--app-primary-tint);
+  color: var(--app-primary-dark);
+}
+.option-chip.v-chip {
+  height: 44px;
+  padding: 0 18px;
+  border: 1.5px solid var(--app-border) !important;
+  background: var(--app-surface) !important;
+  font-size: 0.95rem;
+  color: var(--app-text);
+}
+.option-chip--active.v-chip {
+  border-color: var(--v-primary-base) !important;
+  background: var(--app-primary-tint) !important;
+  color: var(--app-primary-dark) !important;
+  font-weight: 600;
+}
+.option-chip__price {
+  margin-left: 6px;
+  color: var(--app-text-muted);
+}
+.detail-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--app-border);
+}
+.detail-add {
+  flex: 1 1 220px;
+  box-shadow: var(--shadow-primary) !important;
+}
+.detail-add.v-btn--disabled {
+  box-shadow: none !important;
+}
+.detail-hint {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--app-text-muted);
+}
+@media (max-width: 600px) {
+  .detail-panel {
+    padding: 20px;
+  }
+  .detail-name {
+    font-size: 1.5rem;
+  }
 }
 </style>

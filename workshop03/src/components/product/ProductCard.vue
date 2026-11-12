@@ -20,6 +20,7 @@
     <div class="product-card__body">
       <div v-if="product.category" class="product-card__category text-truncate">{{ product.category }}</div>
       <div class="product-card__name line-clamp-2">{{ product.name }}</div>
+      <div v-if="product.description" class="product-card__desc text-truncate">{{ product.description }}</div>
 
       <div class="product-card__footer">
         <div class="product-card__price-wrap">
@@ -71,10 +72,10 @@ export default {
 <style scoped>
 .product-card {
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .product-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-md) !important;
 }
 .product-card:focus-visible {
@@ -90,7 +91,7 @@ export default {
   transition: transform 0.35s ease;
 }
 .product-card:hover .product-card__thumb {
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 .product-card--sold-out .product-card__thumb {
   filter: grayscale(1);
@@ -106,7 +107,7 @@ export default {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  padding: 12px 14px 14px;
+  padding: 14px 16px 16px;
 }
 .product-card__category {
   font-size: 0.75rem;
@@ -117,10 +118,14 @@ export default {
 .product-card__name {
   font-family: var(--font-heading);
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.4;
   color: var(--app-text);
-  min-height: 2.8em;
+}
+.product-card__desc {
+  margin-top: 2px;
+  font-size: 0.85rem;
+  color: var(--app-text-muted);
 }
 .product-card__footer {
   display: flex;
@@ -146,7 +151,7 @@ export default {
 }
 .product-card__add {
   flex-shrink: 0;
-  box-shadow: 0 6px 14px rgba(228, 87, 46, 0.3) !important;
+  box-shadow: 0 6px 14px var(--shadow-primary) !important;
 }
 .product-card__add.v-btn--disabled {
   box-shadow: none !important;

@@ -1,7 +1,11 @@
 <template>
   <div>
-    <PageHeader :title="isAdmin ? 'ออเดอร์' : 'ออเดอร์ของฉัน'" :subtitle="isAdmin ? 'ออเดอร์ทั้งหมดของร้าน รับออเดอร์และอัปเดตสถานะได้ที่นี่' : 'ประวัติและสถานะออเดอร์ของคุณ'">
-      <v-btn outlined color="primary" :loading="loading" @click="load">
+    <PageHeader :title="isAdmin ? 'ออเดอร์' : 'ออเดอร์ของฉัน'" :subtitle="isAdmin ? 'รับออเดอร์และอัปเดตสถานะ · กดปุ่มบนการ์ดเพื่อเลื่อนสถานะ' : 'ติดตามสถานะอาหารและดูประวัติการสั่ง'">
+      <v-btn-toggle v-if="isAdmin" v-model="view" mandatory rounded dense class="view-toggle">
+        <v-btn value="board"><v-icon left small>mdi-view-column-outline</v-icon>บอร์ดครัว</v-btn>
+        <v-btn value="table"><v-icon left small>mdi-table</v-icon>ตาราง</v-btn>
+      </v-btn-toggle>
+      <v-btn outlined rounded color="primary" :loading="loading" @click="load">
         <v-icon left>mdi-refresh</v-icon>
         รีเฟรช
       </v-btn>
@@ -50,16 +54,62 @@
           />
         </v-col>
       </v-row>
-      <v-divider />
-      <OrderTable
-        :orders="visibleOrders"
-        :search="search || ''"
-        :loading="loading"
-        :admin="isAdmin"
-        :updating-id="updatingId"
-        @change-status="changeStatus"
-      />
+
+      <template v-if="isAdmin && view === 'table'">
+        <v-divider />
+        <OrderTable
+          :orders="visibleOrders"
+          :search="search || ''"
+          :loading="loading"
+          :admin="isAdmin"
+          :updating-id="updatingId"
+          @change-status="changeStatus"
+        />
+      </template>
     </v-card>
+
+    <OrderBoard
+      v-if="isAdmin && view === 'board'"
+      :orders="searchedOrders"
+      :loading="loading"
+      :updating-id="updatingId"
+      class="mt-5"
+      @change-status="changeStatus"
+    />
+
+    <div v-if="!isAdmin" class="mt-6">
+      <template v-if="loading">
+        <v-skeleton-loader v-for="n in 2" :key="n" type="article" class="surface-card mb-4" />
+      </template>
+
+      <template v-else>
+        <section v-if="customerOrders.active.length" class="orders-section">
+          <h2 class="orders-section__title">กำลังดำเนินการ</h2>
+          <OrderCard
+            v-for="order in customerOrders.active"
+            :key="order._id"
+            :order="order"
+            :updating="updatingId === order._id"
+            @change-status="changeStatus"
+          />
+        </section>
+
+        <section v-if="customerOrders.past.length" class="orders-section">
+          <h2 class="orders-section__title">ออเดอร์ก่อนหน้า</h2>
+          <OrderCard v-for="order in customerOrders.past" :key="order._id" :order="order" />
+        </section>
+
+        <v-card v-if="!customerOrders.active.length && !customerOrders.past.length" class="surface-card">
+          <EmptyState
+            icon="mdi-clipboard-text-outline"
+            :title="orders.length ? 'ไม่พบออเดอร์ที่ค้นหา' : 'ยังไม่มีออเดอร์'"
+            :text="orders.length ? 'ลองเปลี่ยนคำค้นหาหรือตัวกรอง' : 'สั่งอาหารจานแรก แล้วติดตามสถานะได้ที่นี่'"
+          >
+            <v-btn v-if="!orders.length" depressed rounded large color="primary" to="/">ไปเลือกเมนู</v-btn>
+          </EmptyState>
+        </v-card>
+      </template>
+    </div>
 
     <ConfirmDialog
       v-model="cancelDialog"
@@ -80,17 +130,22 @@ import orderService from '../services/orderService'
 import productService from '../services/productService'
 import { ORDER_STATUS, orderStatus } from '../utils/constants'
 import { formatNumber, formatPrice } from '../utils/format'
+import { toOrderRow, matchesOrder, byNewest, ACTIVE_STATUSES, CANCELLABLE_STATUSES } from '../utils/orderRows'
 import PageHeader from '../components/common/PageHeader.vue'
 import ConfirmDialog from '../components/common/ConfirmDialog.vue'
+import EmptyState from '../components/common/EmptyState.vue'
 import StatCard from '../components/admin/StatCard.vue'
 import OrderTable from '../components/admin/OrderTable.vue'
+import OrderBoard from '../components/order/OrderBoard.vue'
+import OrderCard from '../components/order/OrderCard.vue'
 
 const ALL = 'all'
 
 export default {
   name: 'OrdersView',
-  components: { PageHeader, ConfirmDialog, StatCard, OrderTable },
+  components: { PageHeader, ConfirmDialog, EmptyState, StatCard, OrderTable, OrderBoard, OrderCard },
   data: () => ({
+    view: 'board',
     orders: [],
     products: [],
     loading: true,
@@ -123,16 +178,27 @@ export default {
         .filter((order) => this.productId === ALL || (order.product && order.product._id === this.productId))
         .filter((order) => this.status === ALL || order.status === this.status)
     },
+    // ตารางค้นหาเองผ่าน v-data-table ส่วนบอร์ดและการ์ดใช้ตัวกรองนี้
+    searchedOrders() {
+      return this.visibleOrders.filter((order) => matchesOrder(toOrderRow(order, this.isAdmin), this.search))
+    },
+    customerOrders() {
+      const rows = this.searchedOrders.map((order) => toOrderRow(order, false)).sort(byNewest)
+      return {
+        active: rows.filter((row) => ACTIVE_STATUSES.includes(row.status)),
+        past: rows.filter((row) => !ACTIVE_STATUSES.includes(row.status)),
+      }
+    },
     stats() {
       const active = this.visibleOrders.filter((order) => order.status !== 'cancelled')
-      const waiting = active.filter((order) => order.status !== 'done').length
+      const waiting = active.filter((order) => CANCELLABLE_STATUSES.includes(order.status)).length
       const quantity = active.reduce((sum, order) => sum + order.quantity, 0)
       const revenue = active.reduce((sum, order) => sum + order.totalPrice, 0)
       return [
         { label: 'จำนวนออเดอร์', value: formatNumber(this.visibleOrders.length), icon: 'mdi-clipboard-text-outline' },
-        { label: 'รอรับ / กำลังทำ', value: formatNumber(waiting), icon: 'mdi-clock-outline', color: '#C98A00', tint: '#FFF8E1' },
-        { label: this.isAdmin ? 'ขายได้ (จาน)' : 'สั่งไปแล้ว (จาน)', value: formatNumber(quantity), icon: 'mdi-food-outline', color: '#2F6FED', tint: '#E8F3FF' },
-        { label: this.isAdmin ? 'ยอดขายรวม' : 'ยอดสั่งรวม', value: formatPrice(revenue), icon: 'mdi-cash-multiple', color: '#1E8E5A', tint: '#E6F5EC' },
+        { label: 'รอรับ / กำลังทำ', value: formatNumber(waiting), icon: 'mdi-clock-outline', color: '#7A4F00', tint: '#FFF4D6' },
+        { label: this.isAdmin ? 'ขายได้ (จาน)' : 'สั่งไปแล้ว (จาน)', value: formatNumber(quantity), icon: 'mdi-food-outline', color: '#1F55C7', tint: '#E8F0FF' },
+        { label: this.isAdmin ? 'ยอดขายรวม' : 'ยอดสั่งรวม', value: formatPrice(revenue), icon: 'mdi-cash-multiple', color: '#17663F', tint: '#E3F4EA' },
       ]
     },
   },
@@ -184,3 +250,20 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.view-toggle {
+  border: 1px solid var(--app-border-strong);
+}
+.orders-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.orders-section__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+</style>

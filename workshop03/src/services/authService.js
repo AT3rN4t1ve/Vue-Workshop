@@ -30,6 +30,14 @@ export default {
     return http.put('/me', { firstName, lastName })
   },
 
+  updateAvatar(avatar) {
+    return http.put('/me/avatar', { avatar })
+  },
+
+  removeAvatar() {
+    return http.delete('/me/avatar')
+  },
+
   changePassword({ currentPassword, newPassword }) {
     return http.put('/me/password', { currentPassword, newPassword })
   },

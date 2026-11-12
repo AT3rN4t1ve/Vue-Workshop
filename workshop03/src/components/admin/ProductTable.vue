@@ -27,7 +27,7 @@
     </template>
 
     <template #[`item.category`]="{ item }">
-      <v-chip small outlined>{{ item.category || '-' }}</v-chip>
+      <span class="product-table__category">{{ item.category || '-' }}</span>
     </template>
 
     <template #[`item.price`]="{ item }">
@@ -43,10 +43,10 @@
     </template>
 
     <template #[`item.actions`]="{ item }">
-      <v-btn icon small :aria-label="`แก้ไข ${item.name}`" @click="$emit('edit', item)">
+      <v-btn icon small class="product-table__action" :aria-label="`แก้ไข ${item.name}`" @click="$emit('edit', item)">
         <v-icon small>mdi-pencil-outline</v-icon>
       </v-btn>
-      <v-btn icon small color="error" :aria-label="`ลบ ${item.name}`" @click="$emit('delete', item)">
+      <v-btn icon small color="error" class="product-table__action ml-1" :aria-label="`ลบ ${item.name}`" @click="$emit('delete', item)">
         <v-icon small>mdi-trash-can-outline</v-icon>
       </v-btn>
     </template>
@@ -79,7 +79,21 @@ export default {
 
 <style scoped>
 .product-table__thumb {
-  width: 44px;
+  width: 48px;
+}
+.product-table__thumb >>> .product-thumb {
+  border-radius: 12px;
+}
+.product-table__category {
+  font-size: 0.875rem;
+  color: var(--app-text-muted);
+}
+.product-table__action {
+  border: 1px solid var(--app-border);
+}
+.product-table >>> thead th {
+  background: var(--app-bg);
+  font-size: 0.8rem !important;
 }
 .product-table__text {
   min-width: 160px;

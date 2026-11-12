@@ -1,34 +1,43 @@
 <template>
-  <v-app-bar app color="white" height="64" class="app-header" flat>
+  <v-app-bar app color="white" :height="68" class="app-header" flat>
     <v-container class="app-container d-flex align-center py-0">
-      <router-link to="/" class="brand d-flex align-center">
-        <v-avatar color="primary" size="36" rounded class="mr-3">
-          <v-icon dark size="22">mdi-silverware-fork-knife</v-icon>
-        </v-avatar>
-        <span class="brand-name">{{ APP_NAME }}</span>
-      </router-link>
+      <BrandLogo :subtitle="isAdmin ? `${APP_NAME_TH} · กิน 1 คำ สวดอภิธรรม 7 คืน` : APP_NAME_TH" />
 
       <v-spacer />
 
       <template v-if="isLoggedIn">
-        <nav class="d-none d-md-flex align-center mr-2">
+        <nav class="d-none d-md-flex align-center mr-3" aria-label="เมนูหลัก">
           <v-btn
             v-for="item in menu"
             :key="item.to"
             :to="item.to"
             :exact="item.exact"
             text
+            rounded
             class="nav-btn mx-1"
             active-class="nav-btn--active"
           >
-            <v-icon left size="20">{{ item.icon }}</v-icon>
             {{ item.label }}
           </v-btn>
         </nav>
 
-        <v-btn icon to="/cart" aria-label="ตะกร้า" class="mr-1">
+        <v-btn
+          to="/cart"
+          depressed
+          rounded
+          color="primary"
+          class="cart-btn d-none d-sm-flex mr-2"
+          active-class="cart-btn--active"
+          :aria-label="`ตะกร้า ${cartCount} รายการ`"
+        >
+          <v-icon left size="20">mdi-basket-outline</v-icon>
+          ตะกร้า
+          <span v-if="cartCount > 0" :key="bumpKey" class="cart-btn__count tabular" :class="{ 'badge-bump': bumpKey > 0 }">{{ cartCount }}</span>
+        </v-btn>
+
+        <v-btn icon to="/cart" class="d-sm-none mr-1" :aria-label="`ตะกร้า ${cartCount} รายการ`">
           <v-badge :content="cartCount" :value="cartCount > 0" color="primary" overlap>
-            <v-icon>mdi-cart-outline</v-icon>
+            <v-icon>mdi-basket-outline</v-icon>
           </v-badge>
         </v-btn>
 
@@ -41,28 +50,27 @@
 <script>
 import { mapGetters } from 'vuex'
 import UserMenu from './UserMenu.vue'
-import { APP_NAME } from '../../utils/constants'
+import BrandLogo from './BrandLogo.vue'
+import { APP_NAME_TH } from '../../utils/constants'
+import { mainMenu } from './menu'
 
 export default {
   name: 'AppHeader',
-  components: { UserMenu },
+  components: { UserMenu, BrandLogo },
   data: () => ({
-    APP_NAME,
+    APP_NAME_TH,
+    bumpKey: 0,
   }),
+  watch: {
+    cartCount(next, prev) {
+      if (next > prev) this.bumpKey += 1
+    },
+  },
   computed: {
     ...mapGetters('cart', { cartCount: 'count' }),
     ...mapGetters('auth', ['isLoggedIn', 'isAdmin']),
     menu() {
-      const shop = { label: 'เมนูอาหาร', to: '/', icon: 'mdi-food-outline', exact: true }
-      if (!this.isAdmin) {
-        return [shop, { label: 'ออเดอร์ของฉัน', to: '/orders', icon: 'mdi-clipboard-text-outline' }]
-      }
-      return [
-        shop,
-        { label: 'จัดการเมนู', to: '/admin/products', icon: 'mdi-notebook-edit-outline' },
-        { label: 'ออเดอร์', to: '/orders', icon: 'mdi-clipboard-text-outline' },
-        { label: 'ผู้ใช้', to: '/admin/users', icon: 'mdi-account-multiple-outline' },
-      ]
+      return mainMenu(this.isAdmin)
     },
   },
 }
@@ -71,27 +79,50 @@ export default {
 <style scoped>
 .app-header {
   border-bottom: 1px solid var(--app-border) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: saturate(1.4) blur(8px);
 }
 .app-header >>> .v-toolbar__content {
   padding: 0;
 }
-.brand {
-  text-decoration: none;
-}
-.brand-name {
-  font-family: var(--font-heading);
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--app-text);
-  white-space: nowrap;
-}
 .nav-btn {
+  height: 40px !important;
+  padding: 0 16px !important;
   color: var(--app-text-muted) !important;
+  font-size: 0.95rem;
   font-weight: 500;
-  border-radius: var(--radius-pill);
+}
+.nav-btn::before {
+  display: none;
+}
+.nav-btn:hover {
+  background: var(--app-hover);
 }
 .nav-btn--active {
-  color: var(--v-primary-base) !important;
+  color: var(--app-primary-dark) !important;
   background: var(--app-primary-tint);
+  font-weight: 600;
+}
+.cart-btn {
+  height: 44px !important;
+  padding: 0 14px 0 12px !important;
+  font-weight: 600;
+  box-shadow: var(--shadow-primary) !important;
+}
+.cart-btn--active {
+  background: var(--app-primary-dark) !important;
+}
+.cart-btn__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  margin-left: 8px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  color: var(--app-primary-dark);
+  font-size: 0.75rem;
 }
 </style>

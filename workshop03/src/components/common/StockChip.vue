@@ -1,7 +1,7 @@
 <template>
-  <v-chip :color="status.color" :text-color="status.textColor" small label class="font-weight-medium">
+  <span class="stock-chip" :style="{ background: status.color, color: status.textColor }">
     {{ status.label }}
-  </v-chip>
+  </span>
 </template>
 
 <script>
@@ -16,17 +16,30 @@ export default {
   computed: {
     status() {
       if (this.stock <= 0) {
-        return { label: 'หมดแล้ว', color: '#FDECEC', textColor: '#B93838' }
+        return { label: 'หมดแล้ว', color: '#FDECEC', textColor: '#B3261E' }
       }
       if (this.stock <= LOW_STOCK) {
         return {
           label: this.showAmount ? `เหลือ ${this.stock} จาน` : 'ใกล้หมด',
-          color: '#FFF4DC',
-          textColor: '#8A5A00',
+          color: '#FFF4D6',
+          textColor: '#7A4F00',
         }
       }
-      return { label: 'พร้อมสั่ง', color: '#E6F5EC', textColor: '#17714A' }
+      return { label: 'พร้อมสั่ง', color: '#E3F4EA', textColor: '#17663F' }
     },
   },
 }
 </script>
+
+<style scoped>
+.stock-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+</style>

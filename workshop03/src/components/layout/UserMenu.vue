@@ -3,7 +3,8 @@
     <template #activator="{ on, attrs }">
       <v-btn icon aria-label="เมนูผู้ใช้" v-bind="attrs" v-on="on">
         <v-avatar size="36" class="avatar-tint">
-          <span class="user-menu__initial">{{ initial }}</span>
+          <v-img v-if="user.avatar" :src="user.avatar" alt="" />
+          <span v-else class="user-menu__initial">{{ initial }}</span>
         </v-avatar>
       </v-btn>
     </template>

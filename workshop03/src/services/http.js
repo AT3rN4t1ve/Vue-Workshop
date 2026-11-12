@@ -46,6 +46,9 @@ const MESSAGES = {
   'password must be at least 6 characters': 'รหัสผ่านต้องยาวอย่างน้อย 6 ตัวอักษร',
   'current password is incorrect': 'รหัสผ่านเดิมไม่ถูกต้อง',
   'new password must be different': 'รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านเดิม',
+  'avatar must be a png, jpeg or webp image': 'รูปโปรไฟล์ต้องเป็นไฟล์ PNG, JPG หรือ WebP',
+  'avatar is too large': 'รูปโปรไฟล์มีขนาดใหญ่เกินไป',
+  'payload too large': 'ข้อมูลที่ส่งมีขนาดใหญ่เกินไป',
   'internal server error': 'เซิร์ฟเวอร์ขัดข้อง กรุณาลองใหม่อีกครั้ง',
 }
 

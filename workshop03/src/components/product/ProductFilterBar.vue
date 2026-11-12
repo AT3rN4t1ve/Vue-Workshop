@@ -67,6 +67,7 @@ export default {
   },
   data: () => ({
     sortOptions: [
+      { text: 'แนะนำ', value: 'recommended' },
       { text: 'มาใหม่ล่าสุด', value: 'newest' },
       { text: 'ราคาต่ำไปสูง', value: 'price-asc' },
       { text: 'ราคาสูงไปต่ำ', value: 'price-desc' },
@@ -138,7 +139,7 @@ export default {
   background: var(--v-primary-base) !important;
   border-color: var(--v-primary-base);
   color: #fff;
-  box-shadow: 0 4px 12px rgba(228, 87, 46, 0.28);
+  box-shadow: 0 4px 12px var(--shadow-primary);
 }
 @media (max-width: 600px) {
   .filter-bar__search {

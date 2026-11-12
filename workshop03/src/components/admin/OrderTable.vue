@@ -61,6 +61,7 @@
           v-if="item.next"
           small
           depressed
+          rounded
           color="primary"
           :loading="updatingId === item._id"
           :disabled="!!updatingId"
@@ -85,14 +86,8 @@
 </template>
 
 <script>
-import { orderStatus } from '../../utils/constants'
-import { optionsText } from '../../utils/options'
+import { toOrderRow } from '../../utils/orderRows'
 import ProductThumb from '../common/ProductThumb.vue'
-
-const NEXT_STEP = {
-  pending: { status: 'cooking', text: 'รับออเดอร์' },
-  cooking: { status: 'done', text: 'เสร็จแล้ว' },
-}
 
 export default {
   name: 'OrderTable',
@@ -122,24 +117,7 @@ export default {
       return this.admin ? this.allHeaders : this.allHeaders.filter((header) => header.value !== 'customer')
     },
     rows() {
-      return this.orders.map((order) => {
-        const user = order.user || {}
-        const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ')
-        const statusInfo = orderStatus(order.status)
-        return {
-          ...order,
-          code: String(order._id).slice(-6).toUpperCase(),
-          productName: order.product ? order.product.name : order.productName || 'ไม่ทราบชื่อเมนู',
-          imageUrl: order.product ? order.product.imageUrl : '',
-          productDeleted: !order.product,
-          optionsText: optionsText(order.options),
-          customer: fullName || user.email || '-',
-          statusInfo,
-          statusText: statusInfo.text,
-          next: this.admin ? NEXT_STEP[order.status] : null,
-          canCancel: this.admin ? ['pending', 'cooking'].includes(order.status) : order.status === 'pending',
-        }
-      })
+      return this.orders.map((order) => toOrderRow(order, this.admin))
     },
   },
 }

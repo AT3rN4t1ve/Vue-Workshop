@@ -1,15 +1,16 @@
 <template>
-  <v-dialog :value="value" max-width="420" :persistent="loading" @input="$emit('input', $event)">
-    <v-card class="pa-2">
-      <v-card-title class="text-h6 font-weight-medium">{{ title }}</v-card-title>
-      <v-card-text class="text-body-1">
+  <v-dialog :value="value" max-width="440" :persistent="loading" content-class="confirm-dialog" @input="$emit('input', $event)">
+    <v-card class="confirm-dialog__card">
+      <div class="confirm-dialog__title">{{ title }}</div>
+      <div class="confirm-dialog__body">
         <slot>{{ message }}</slot>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn text :disabled="loading" @click="$emit('input', false)">ยกเลิก</v-btn>
-        <v-btn :color="color" depressed :loading="loading" @click="$emit('confirm')">{{ confirmText }}</v-btn>
-      </v-card-actions>
+      </div>
+      <div class="confirm-dialog__actions">
+        <v-btn outlined rounded large :disabled="loading" class="confirm-dialog__cancel" @click="$emit('input', false)">
+          ยกเลิก
+        </v-btn>
+        <v-btn :color="color" depressed rounded large :loading="loading" @click="$emit('confirm')">{{ confirmText }}</v-btn>
+      </div>
     </v-card>
   </v-dialog>
 </template>
@@ -27,3 +28,33 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.confirm-dialog__card {
+  padding: 24px;
+  border-radius: var(--radius-lg) !important;
+}
+.confirm-dialog__title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--app-text);
+}
+.confirm-dialog__body {
+  margin-top: 8px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--app-text-muted);
+}
+.confirm-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+.confirm-dialog__cancel {
+  border-color: var(--app-border-strong) !important;
+  color: var(--app-text) !important;
+}
+</style>

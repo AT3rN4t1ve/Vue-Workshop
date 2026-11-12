@@ -1,9 +1,9 @@
 <template>
   <div>
     <PageHeader title="จัดการเมนู" subtitle="เพิ่ม แก้ไข ลบเมนู ตั้งตัวเลือก และปรับจำนวนที่ขายได้">
-      <v-btn color="primary" depressed @click="openCreate">
+      <v-btn color="primary" depressed rounded large class="add-btn" @click="openCreate">
         <v-icon left>mdi-plus</v-icon>
-        เพิ่มเมนู
+        เพิ่มเมนูใหม่
       </v-btn>
     </PageHeader>
 
@@ -16,17 +16,25 @@
     <v-alert v-if="error" type="error" text class="mb-4">{{ error }}</v-alert>
 
     <v-card class="surface-card">
-      <div class="pa-4">
+      <div class="pa-4 toolbar">
         <v-text-field
           v-model="search"
-          label="ค้นหาเมนู"
+          placeholder="ค้นหาชื่อเมนูหรือหมวดหมู่"
+          aria-label="ค้นหาเมนู"
           prepend-inner-icon="mdi-magnify"
           outlined
+          rounded
           dense
           hide-details
           clearable
           class="search-field"
         />
+        <v-chip-group v-model="stockFilter" mandatory active-class="stock-filter--active" aria-label="กรองตามจำนวนคงเหลือ">
+          <v-chip v-for="option in stockFilters" :key="option.value" :value="option.value" class="stock-filter">
+            {{ option.text }}
+            <span class="stock-filter__count tabular">{{ option.count }}</span>
+          </v-chip>
+        </v-chip-group>
       </div>
       <v-divider />
       <ProductTable :products="filteredProducts" :loading="loading" @edit="openEdit" @delete="openDelete" />
@@ -64,6 +72,12 @@ import StatCard from '../../components/admin/StatCard.vue'
 import ProductTable from '../../components/admin/ProductTable.vue'
 import ProductFormDialog from '../../components/admin/ProductFormDialog.vue'
 
+const STOCK_TESTS = {
+  all: () => true,
+  low: (p) => p.stock > 0 && p.stock <= LOW_STOCK,
+  out: (p) => p.stock <= 0,
+}
+
 export default {
   name: 'ManageProductsView',
   components: { PageHeader, ConfirmDialog, StatCard, ProductTable, ProductFormDialog },
@@ -73,18 +87,29 @@ export default {
     saving: false,
     error: '',
     search: '',
+    stockFilter: 'all',
     formDialog: false,
     editing: null,
     deleteDialog: false,
     deleting: null,
   }),
   computed: {
+    stockFilters() {
+      const count = (test) => this.products.filter(test).length
+      return [
+        { text: 'ทั้งหมด', value: 'all', count: this.products.length },
+        { text: 'ใกล้หมด', value: 'low', count: count(STOCK_TESTS.low) },
+        { text: 'หมดแล้ว', value: 'out', count: count(STOCK_TESTS.out) },
+      ]
+    },
     filteredProducts() {
       const keyword = (this.search || '').trim().toLowerCase()
-      if (!keyword) return this.products
-      return this.products.filter((product) =>
-        `${product.name} ${product.description || ''} ${product.category || ''}`.toLowerCase().includes(keyword)
-      )
+      const test = STOCK_TESTS[this.stockFilter] || STOCK_TESTS.all
+      return this.products.filter((product) => {
+        if (!test(product)) return false
+        if (!keyword) return true
+        return `${product.name} ${product.description || ''} ${product.category || ''}`.toLowerCase().includes(keyword)
+      })
     },
     categories() {
       return [...new Set(this.products.map((product) => product.category).filter(Boolean))].sort((a, b) =>
@@ -97,9 +122,9 @@ export default {
       const stockValue = this.products.reduce((sum, p) => sum + p.price * p.stock, 0)
       return [
         { label: 'เมนูทั้งหมด', value: formatNumber(this.products.length), icon: 'mdi-food-outline' },
-        { label: 'ใกล้หมด', value: formatNumber(lowStock), icon: 'mdi-alert-outline', color: '#C98A00', tint: '#FFF8E1' },
-        { label: 'หมดแล้ว', value: formatNumber(soldOut), icon: 'mdi-close-circle-outline', color: '#D64545', tint: '#FDECEC' },
-        { label: 'มูลค่าที่ยังขายได้', value: formatPrice(stockValue), icon: 'mdi-cash-multiple', color: '#1E8E5A', tint: '#E6F5EC' },
+        { label: 'ใกล้หมด', value: formatNumber(lowStock), icon: 'mdi-alert-outline', color: '#7A4F00', tint: '#FFF4D6' },
+        { label: 'หมดแล้ว', value: formatNumber(soldOut), icon: 'mdi-close-circle-outline', color: '#B3261E', tint: '#FDECEC' },
+        { label: 'มูลค่าที่ยังขายได้', value: formatPrice(stockValue), icon: 'mdi-cash-multiple', color: '#17663F', tint: '#E3F4EA' },
       ]
     },
   },
@@ -170,7 +195,33 @@ export default {
 </script>
 
 <style scoped>
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
 .search-field {
-  max-width: 360px;
+  flex: 0 1 360px;
+}
+.add-btn {
+  box-shadow: var(--shadow-primary) !important;
+}
+.stock-filter.v-chip {
+  height: 36px;
+  border: 1.5px solid var(--app-border);
+  background: var(--app-surface) !important;
+  color: var(--app-text);
+}
+.stock-filter--active.v-chip {
+  border-color: var(--v-primary-base);
+  background: var(--app-primary-tint) !important;
+  color: var(--app-primary-dark);
+  font-weight: 600;
+}
+.stock-filter__count {
+  margin-left: 6px;
+  opacity: 0.75;
 }
 </style>
