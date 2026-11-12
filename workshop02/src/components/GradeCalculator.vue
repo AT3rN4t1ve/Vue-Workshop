@@ -16,6 +16,7 @@
           <v-row>
             <v-col cols="12" md="7" class="pr-md-6">
               <v-text-field
+                ref="scoreInput"
                 v-model="score"
                 label="คะแนน (0 - 100)"
                 placeholder="เช่น 75"
@@ -51,18 +52,32 @@
                 </template>
               </v-slider>
 
-              <v-btn
-                class="submit-btn mt-4"
-                block
-                x-large
-                rounded
-                depressed
-                dark
-                @click="calculateGrade"
-              >
-                <v-icon left>mdi-calculator-variant-outline</v-icon>
-                ตัดเกรด
-              </v-btn>
+              <div class="action-row mt-4">
+                <v-btn
+                  class="submit-btn"
+                  x-large
+                  rounded
+                  depressed
+                  dark
+                  @click="calculateGrade"
+                >
+                  <v-icon left>mdi-calculator-variant-outline</v-icon>
+                  ตัดเกรด
+                </v-btn>
+
+                <v-btn
+                  class="reset-btn"
+                  x-large
+                  rounded
+                  outlined
+                  color="#6d28d9"
+                  :disabled="isEmpty"
+                  @click="reset"
+                >
+                  <v-icon left>mdi-restore</v-icon>
+                  รีเซ็ต
+                </v-btn>
+              </div>
 
               <v-expand-transition>
                 <div v-if="grade">
@@ -123,6 +138,10 @@ export default {
       return this.gradeTable.find((item) => item.grade === this.grade) || {}
     },
 
+    isEmpty() {
+      return (this.score === '' || this.score == null) && !this.grade && !this.error
+    },
+
     sliderValue() {
       const value = Number(this.score)
       if (this.score === '' || this.score == null || Number.isNaN(value)) return 0
@@ -131,6 +150,15 @@ export default {
   },
 
   methods: {
+    // ล้างคะแนน ผลเกรด และข้อความ error กลับเป็นค่าเริ่มต้น แล้วโฟกัสช่องกรอกให้พิมพ์ต่อได้ทันที
+    reset() {
+      this.score = ''
+      this.checkedScore = null
+      this.grade = ''
+      this.error = ''
+      this.$nextTick(() => this.$refs.scoreInput && this.$refs.scoreInput.focus())
+    },
+
     onSlide(value) {
       this.score = String(value)
       this.calculateGrade()
@@ -209,6 +237,21 @@ export default {
 .main-card {
   border-radius: 24px !important;
   box-shadow: 0 20px 50px rgba(49, 46, 129, 0.12) !important;
+}
+
+.action-row {
+  display: flex;
+  gap: 12px;
+}
+
+.action-row .submit-btn {
+  flex: 1 1 auto;
+}
+
+.reset-btn {
+  flex: 0 0 auto;
+  font-weight: 600;
+  background: #fff;
 }
 
 .submit-btn {
